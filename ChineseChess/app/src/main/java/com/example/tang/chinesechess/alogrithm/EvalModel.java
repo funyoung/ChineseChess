@@ -13,7 +13,7 @@ import java.util.Map;
 public class EvalModel {
     /*  [red, black] >> [PieceValue, PiecePosition, PieceControl, PieceFlexible, PieceProtect, PieceFeature]*/
     /* However, only PieceValue and PiecePosition are implemented, so the array size is set to 2. */
-    private int[][] values = new int[2][2];
+    private final int[][] values = new int[2][2];
 
     /**
      * @param player, eval the situation in player's perspective.
@@ -22,7 +22,7 @@ public class EvalModel {
         for (Map.Entry<String, Piece> stringPieceEntry : board.pieces.entrySet()) {
             Piece piece = stringPieceEntry.getValue();
             /* The table in PiecePosition is for red player in default. To eval black player, needs to perform a mirror transformation. */
-            int[] reversePosition = new int[]{board.BOARD_HEIGHT - 1 - piece.position[0], piece.position[1]};
+            int[] reversePosition = {board.BOARD_HEIGHT - 1 - piece.position[0], piece.position[1]};
             switch (piece.character) {
                 case 'b':
                     if (piece.color == 'r') values[0][0] += evalPieceValue(0);
@@ -87,13 +87,13 @@ public class EvalModel {
 
     private int evalPieceValue(int p) {
         /* b | s | x | m | j | p | z*/
-        int[] pieceValue = new int[]{1000000, 110, 110, 300, 600, 300, 70};
+        int[] pieceValue = {1000000, 110, 110, 300, 600, 300, 70};
         return pieceValue[p];
     }
 
     private int evalPiecePosition(int p, int[] pos) {
 
-        int[][] pPosition = new int[][]{
+        int[][] pPosition = {
                 {6, 4, 0, -10, -12, -10, 0, 4, 6},
                 {2, 2, 0, -4, -14, -4, 0, 2, 2},
                 {2, 2, 0, -10, -8, -10, 0, 2, 2},
@@ -106,7 +106,7 @@ public class EvalModel {
                 {0, 0, 2, 6, 6, 6, 2, 0, 0}
         };
 
-        int[][] mPosition = new int[][]{
+        int[][] mPosition = {
                 {4, 8, 16, 12, 4, 12, 16, 8, 4},
                 {4, 10, 28, 16, 8, 16, 28, 10, 4},
                 {12, 14, 16, 20, 18, 20, 16, 14, 12},
@@ -118,7 +118,7 @@ public class EvalModel {
                 {0, 2, 4, 4, -2, 4, 4, 2, 0},
                 {0, -4, 0, 0, 0, 0, 0, -4, 0}
         };
-        int[][] jPosition = new int[][]{
+        int[][] jPosition = {
                 {14, 14, 12, 18, 16, 18, 12, 14, 14},
                 {16, 20, 18, 24, 26, 24, 18, 20, 16},
                 {12, 12, 12, 18, 18, 18, 12, 12, 12},
@@ -131,7 +131,7 @@ public class EvalModel {
                 {-2, 10, 6, 14, 12, 14, 6, 10, -2}
         };
 
-        int[][] zPosition = new int[][]{
+        int[][] zPosition = {
                 {0, 3, 6, 9, 12, 9, 6, 3, 0},
                 {18, 36, 56, 80, 120, 80, 56, 36, 18},
                 {14, 26, 42, 60, 80, 60, 42, 26, 14},
@@ -156,7 +156,7 @@ public class EvalModel {
 
     private int evalPieceFlexible(int p) {
         // b | s | x | m | j | p | z
-        int[] pieceFlexible = new int[]{0, 1, 1, 13, 7, 7, 15};
+        int[] pieceFlexible = {0, 1, 1, 13, 7, 7, 15};
         return 0;
     }
 

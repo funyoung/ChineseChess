@@ -1,6 +1,5 @@
 package com.example.tang.chinesechess.ChessView;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -8,14 +7,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.tang.chinesechess.ChessModel.Board;
 import com.example.tang.chinesechess.ChessModel.Piece;
@@ -41,15 +36,15 @@ public class GameView extends View implements View.OnTouchListener {
     private int SY_COE = 68, SX_COE = 68;/* 棋盘内间隔*/
     private int SX_OFFSET = 50, SY_OFFSET = 15; /* 棋盘和屏幕间隔*/
 
-    private boolean isSelectedPiece=false;
+    private boolean isSelectedPiece;
     private GameController controller;
-    private Map<Piece, Bitmap> pieceObjects = new HashMap<Piece, Bitmap>();
+    private final Map<Piece, Bitmap> pieceObjects = new HashMap<Piece, Bitmap>();
     private Board board;
 
     private Piece selectedPieceKey;
-    private Paint mPaint = new Paint();
+    private final Paint mPaint = new Paint();
 
-    private Context context;
+    private final Context context;
 
     public GameView(Context context) {
         super(context);
@@ -62,7 +57,7 @@ public class GameView extends View implements View.OnTouchListener {
         this.context=context;
     }
 
-    public GameView(Context context, GameController gameController, final Board gameBoard) {
+    public GameView(Context context, GameController gameController, Board gameBoard) {
         super(context);
         this.controller = gameController;
         board = gameBoard;
@@ -133,9 +128,9 @@ public class GameView extends View implements View.OnTouchListener {
         for (Map.Entry<Piece, Bitmap> stringPieceEntry : bitmaps.entrySet()) {
             int[] pos = stringPieceEntry.getKey().position;
             int[] sPos = modelToViewConverter(pos);
-            pos=viewToModelConverter(sPos);
+            pos= viewToModelConverter(sPos);
             Bitmap bitmap = stringPieceEntry.getValue();
-            bitmap=scaleBitmap(bitmap);
+            bitmap= scaleBitmap(bitmap);
             canvas.drawBitmap(bitmap, sPos[0], sPos[1], mPaint);
         }
     }
@@ -147,8 +142,8 @@ public class GameView extends View implements View.OnTouchListener {
         int newWidth = PIECE_WIDTH;
         int newHeight = PIECE_WIDTH;
         // 计算缩放比例
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
+        float scaleWidth = (float) newWidth / width;
+        float scaleHeight = (float) newHeight / height;
         // 取得想要缩放的matrix参数
         Matrix matrix = new Matrix();
         matrix.postScale(scaleWidth, scaleHeight);
@@ -156,12 +151,12 @@ public class GameView extends View implements View.OnTouchListener {
         return Bitmap.createBitmap(bitMap, 0, 0, width, height, matrix, true);
     }
     /** model转view */
-    private int[] modelToViewConverter(int pos[]) {
+    private int[] modelToViewConverter(int[] pos) {
         int sx = pos[1] * SX_COE + SX_OFFSET, sy = pos[0] * SY_COE + SY_OFFSET;
         return new int[]{sx, sy};
     }
     /** view转model */
-    private int[] viewToModelConverter(int sPos[]) {
+    private int[] viewToModelConverter(int[] sPos) {
         /* To make things right, I have to put an 'additional sy offset'. God knows why. */
         int ADDITIONAL_SY_OFFSET = 0;
         int y = (sPos[0] - SX_OFFSET) / SX_COE, x = (sPos[1] - SY_OFFSET - ADDITIONAL_SY_OFFSET) / SY_COE;
@@ -174,7 +169,7 @@ public class GameView extends View implements View.OnTouchListener {
         for (Map.Entry<Piece, Bitmap> stringPieceEntry : bitmaps.entrySet()) {
             int[] pos = stringPieceEntry.getKey().position;
             int[] sPos = modelToViewConverter(pos);
-            if(sPos[0]+PIECE_WIDTH>=x&&sPos[1]+PIECE_HEIGHT>=y&&sPos[0]<=x&&sPos[1]<=y)
+            if(sPos[0]+ PIECE_WIDTH >=x&&sPos[1]+ PIECE_HEIGHT >=y&&sPos[0]<=x&&sPos[1]<=y)
             {
                 return stringPieceEntry.getKey();
             }
@@ -184,7 +179,7 @@ public class GameView extends View implements View.OnTouchListener {
 
     public void movePieceFromModel(String pieceKey, int[] to) {
         selectedPieceKey = null;
-        isSelectedPiece=false;
+        isSelectedPiece =false;
         //invalidate();
         if (controller.hasWin(board) != 'x'){
             showWinner('r');
@@ -196,7 +191,7 @@ public class GameView extends View implements View.OnTouchListener {
     }
     public void movePieceFromAI(String pieceKey, int[] to) {
         selectedPieceKey = null;
-        isSelectedPiece=false;
+        isSelectedPiece =false;
         //invalidate();
         if (controller.hasWin(board) != 'x'){
             showWinner('b');
@@ -234,7 +229,7 @@ public class GameView extends View implements View.OnTouchListener {
         }
         else if (key.key.charAt(0) == board.player) {
             selectedPieceKey = key;
-            isSelectedPiece=true;
+            isSelectedPiece =true;
             /* Select the piece.*/
         }
     }
@@ -242,7 +237,7 @@ public class GameView extends View implements View.OnTouchListener {
     /** 选择棋盘*/
     public void boardClickMove(int[] point){
         if (selectedPieceKey != null) {
-            int[] sPos = new int[]{point[0], point[1]};
+            int[] sPos = {point[0], point[1]};
             int[] pos = viewToModelConverter(sPos);
             int[] selectedPiecePos = board.pieces.get(selectedPieceKey.key).position;
             for (int[] each : Rules.getNextMove(selectedPieceKey.key, selectedPiecePos, board)) {
@@ -260,10 +255,10 @@ public class GameView extends View implements View.OnTouchListener {
     public void drawPlayer(char player, Canvas canvas) {
         if(player=='r')
         {
-            canvas.drawBitmap(scaleBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.r)),VIEW_WIDTH/2-PIECE_WIDTH/2,VIEW_HEIGHT/2-PIECE_HEIGHT/2,mPaint);
+            canvas.drawBitmap(scaleBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.r)), VIEW_WIDTH /2- PIECE_WIDTH /2, VIEW_HEIGHT /2- PIECE_HEIGHT /2, mPaint);
         }
         else{
-            canvas.drawBitmap(scaleBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.b)),VIEW_WIDTH/2-PIECE_WIDTH/2,VIEW_HEIGHT/2-PIECE_HEIGHT/2,mPaint);
+            canvas.drawBitmap(scaleBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.b)), VIEW_WIDTH /2- PIECE_WIDTH /2, VIEW_HEIGHT /2- PIECE_HEIGHT /2, mPaint);
         }
     }
 
@@ -279,14 +274,14 @@ public class GameView extends View implements View.OnTouchListener {
         /* 屏幕适配 */
         VIEW_WIDTH = getWidth();
         VIEW_HEIGHT = getHeight();
-        PIECE_WIDTH = (78 * VIEW_WIDTH) / 700;
+        PIECE_WIDTH = 78 * VIEW_WIDTH / 700;
         PIECE_HEIGHT = PIECE_WIDTH;
 
-        SX_COE=(68*VIEW_WIDTH)/700;
-        SY_COE = (70 * VIEW_HEIGHT) / 712;
+        SX_COE = 68* VIEW_WIDTH /700;
+        SY_COE = 70 * VIEW_HEIGHT / 712;
 
-        SX_OFFSET = (50 * VIEW_WIDTH) / 700;
-        SY_OFFSET = (15 * VIEW_HEIGHT) / 712;
+        SX_OFFSET = 50 * VIEW_WIDTH / 700;
+        SY_OFFSET = 15 * VIEW_HEIGHT / 712;
 
         /* 绘制棋子 */
         drawChess(canvas);
@@ -300,7 +295,7 @@ public class GameView extends View implements View.OnTouchListener {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 Piece piece=null;
-                if((piece=coordinateIsPiece(x,y))!=null)
+                if((piece= coordinateIsPiece(x,y))!=null)
                 {
                     pieceClickMove(piece);
                 }
@@ -323,13 +318,13 @@ public class GameView extends View implements View.OnTouchListener {
 
     public void showWin(char r) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder((MainActivity)context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(r+"is Winner");
         builder.setTitle("提示");
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                ((MainActivity)context).finish();
+                ((MainActivity) context).finish();
             }
         }).create().show();
     }

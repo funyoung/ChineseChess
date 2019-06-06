@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     /**消息队列*/
     Handler myHandler = new Handler() {
         // 接收到消息后处理
+        @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case UPDATA_VIEW:

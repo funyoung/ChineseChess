@@ -11,7 +11,7 @@ public class Board {
     public final int BOARD_WIDTH = 9, BOARD_HEIGHT = 10;
     public Map<String,Piece> pieces;/**棋子集合*/
     public char player='r';/**红色玩家*/
-    private Piece[][] cells = new Piece[BOARD_HEIGHT][BOARD_WIDTH];
+    private final Piece[][] cells = new Piece[BOARD_HEIGHT][BOARD_WIDTH];
 
     public boolean isInside(int[] position) {
         return isInside(position[0], position[1]);
@@ -60,7 +60,7 @@ public class Board {
         cells[origPos[0]][origPos[1]] = null;
         cells[newPos[0]][newPos[1]] = orig;
         orig.position = newPos;
-        player = (player == 'r') ? 'b' : 'r';/**玩家交替*/
+        player = player == 'r' ? 'b' : 'r';/**玩家交替*/
         return inNewPos;
     }
 

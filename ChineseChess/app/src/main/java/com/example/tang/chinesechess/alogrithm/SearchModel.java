@@ -14,7 +14,7 @@ import java.util.Map;
 public class SearchModel {
     private static int DEPTH = 2;
     private Board board;
-    private GameController controller = new GameController();
+    private final GameController controller = new GameController();
 
     public AlphaBetaNode search(Board board) {
         this.board = board;
@@ -55,7 +55,7 @@ public class SearchModel {
         ArrayList<AlphaBetaNode> moves = generateMovesForAll(isMax);
 
         synchronized (this) {
-            for (final AlphaBetaNode n : moves) {
+            for (AlphaBetaNode n : moves) {
                 Piece eaten = board.updatePiece(n.piece, n.to);
             /* Is maximizing player? */
                 final int finalBeta = beta;
