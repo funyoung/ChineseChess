@@ -16,6 +16,7 @@ import android.view.View;
 import com.funyoung.libchess.ChessModel.Board;
 import com.funyoung.libchess.ChessModel.Piece;
 import com.funyoung.libchess.ChessModel.Rules;
+import com.funyoung.libchess.ChessModel.SelectingPiece;
 import com.funyoung.libchess.control.GameController;
 import com.funyoung.libchess.view.IGameView;
 
@@ -31,17 +32,15 @@ public class GameView extends View implements IGameView, View.OnTouchListener {
     private final Map<String, Bitmap> bitmapMap = new HashMap<>();
     private final Paint mPaint = new Paint();
     private final Context context;
+    private final SelectingPiece selectingPiece = new SelectingPiece();
     private Drawable selectionDrawable;
-
     private int VIEW_WIDTH;/* 界面宽度*/
     private int VIEW_HEIGHT;/* 界面高度*/
     private int PIECE_WIDTH = 67, PIECE_HEIGHT = 67;/* 棋子大小*/
     private int SY_COE = 68, SX_COE = 68;/* 棋盘内间隔*/
     private int SX_OFFSET = 50, SY_OFFSET = 15; /* 棋盘和屏幕间隔*/
-
     private GameController controller;
     private Board board;
-    private Piece selectedPieceKey;
 
 
     public GameView(Context context) {
@@ -144,7 +143,7 @@ public class GameView extends View implements IGameView, View.OnTouchListener {
         Bitmap bitmap = bitmapMap.get(pieceKey.key);
         bitmap = scaleBitmap(bitmap);
         canvas.drawBitmap(bitmap, sPos[0], sPos[1], mPaint);
-        if (null != selectedPieceKey && selectedPieceKey.key.equals(pieceKey.key)) {
+        if (selectingPiece.isSameKey(pieceKey.key)) {
             selectionDrawable.setBounds(sPos[0], sPos[1],
                     sPos[0] + bitmap.getWidth(),
                     sPos[1] + bitmap.getHeight());
@@ -214,7 +213,7 @@ public class GameView extends View implements IGameView, View.OnTouchListener {
     }
 
     public void movePieceFromModel(String pieceKey, int[] to) {
-        selectedPieceKey = null;
+        selectingPiece.clear();
 
         //invalidate();
         if (Board.hasWin(board) != 'x') {
@@ -226,7 +225,8 @@ public class GameView extends View implements IGameView, View.OnTouchListener {
     }
 
     public void movePieceFromAI(String pieceKey, int[] to) {
-        selectedPieceKey = null;
+        selectingPiece.clear();
+
         //invalidate();
         if (Board.hasWin(board) != 'x') {
             showWinner('b');
@@ -252,22 +252,17 @@ public class GameView extends View implements IGameView, View.OnTouchListener {
      * A. 无效选择 B. 本次点击新选中本方棋子 C. 上次选择的棋子吃掉本次点中的对方棋子
      */
     public void pieceClickMove(Piece key) {
-        if (selectedPieceKey != null && key.key.charAt(0) != board.player) { //棋子吃棋子
+        if (selectingPiece.hasSelection() && key.key.charAt(0) != board.player) { //棋子吃棋子
             int[] pos = board.pieces.get(key.key).position;
-            int[] selectedPiecePos = board.pieces.get(selectedPieceKey.key).position;
+
             /* If an enemy piece already has been selected.*/
-            for (int[] each : Rules.getNextMove(selectedPieceKey.key, selectedPiecePos, board)) {
-                if (Arrays.equals(each, pos)) {
-                    // Kill self and move that piece.
-                    //pane.remove(bitmapMap.get(key));
-                    bitmapMap.remove(key);
-                    controller.moveChess(selectedPieceKey.key, pos, board);
-                    movePieceFromModel(selectedPieceKey.key, pos);
-                    break;
-                }
+            if (selectingPiece.hasMovingTarget(pos)) {
+                bitmapMap.remove(key);
+                controller.moveChess(selectingPiece.getKey(), pos, board);
+                movePieceFromModel(selectingPiece.getKey(), pos);
             }
         } else if (key.key.charAt(0) == board.player) {
-            selectedPieceKey = key;
+            selectingPiece.select(key, board);
             /* Select the piece.*/
             // todo: only invalidate the selected area
             invalidate();
@@ -278,18 +273,21 @@ public class GameView extends View implements IGameView, View.OnTouchListener {
      * 选择棋盘
      */
     public void boardClickMove(int[] point) {
-        if (selectedPieceKey != null) {
+        if (selectingPiece.hasSelection()) {
             int[] sPos = {point[0], point[1]};
             int[] pos = viewToModelConverter(sPos);
-            int[] selectedPiecePos = board.pieces.get(selectedPieceKey.key).position;
-            for (int[] each : Rules.getNextMove(selectedPieceKey.key, selectedPiecePos, board)) {
-                if (Arrays.equals(each, pos)) {/**当前位置是否可达*/
-                    controller.moveChess(selectedPieceKey.key, pos, board);
-                    movePieceFromModel(selectedPieceKey.key, pos);
-                    break;
-                }
+            if (selectingPiece.hasMovingTarget(pos)) {
+                controller.moveChess(selectingPiece.getKey(), pos, board);
+                movePieceFromModel(selectingPiece.getKey(), pos);
             }
-
+//            int[] selectedPiecePos = board.pieces.get(selectingPiece.getKey()).position;
+//            for (int[] each : Rules.getNextMove(selectingPiece.getKey(), selectedPiecePos, board)) {
+//                if (Arrays.equals(each, pos)) {/**当前位置是否可达*/
+//                    controller.moveChess(selectingPiece.getKey(), pos, board);
+//                    movePieceFromModel(selectingPiece.getKey(), pos);
+//                    break;
+//                }
+//            }
         }
     }
 

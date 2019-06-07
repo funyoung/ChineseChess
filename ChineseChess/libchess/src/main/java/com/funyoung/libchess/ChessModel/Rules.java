@@ -1,6 +1,7 @@
 package com.funyoung.libchess.ChessModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Tang on 2017/2/21.
@@ -12,7 +13,7 @@ public class Rules {
     private static Board board;
     private static char player;
 
-    public static ArrayList<int[]> getNextMove(String piece, int[] pos, Board board) {
+    public static List<int[]> getNextMove(String piece, int[] pos, Board board) {
         Rules.pos = pos;
         Rules.board = board;
         Rules.player = piece.charAt(0);
@@ -39,7 +40,7 @@ public class Rules {
     /**
      * 棋子规则
      */
-    private static ArrayList<int[]> mRules() {
+    private static List<int[]> mRules() {
         ArrayList<int[]> moves = new ArrayList<>();
         int[][] target = {{1, -2}, {2, -1}, {2, 1}, {1, 2}, {-1, 2}, {-2, 1}, {-2, -1}, {-1, -2}};
         int[][] obstacle = {{0, -1}, {1, 0}, {1, 0}, {0, 1}, {0, 1}, {-1, 0}, {-1, 0}, {0, -1}};
@@ -56,7 +57,7 @@ public class Rules {
         return moves;
     }
 
-    private static ArrayList<int[]> jRules() {
+    private static List<int[]> jRules() {
         ArrayList<int[]> moves = new ArrayList<>();
         int[] yOffsets = {1, 2, 3, 4, 5, 6, 7, 8};
         int[] xOffsets = {1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -95,7 +96,7 @@ public class Rules {
         return moves;
     }
 
-    private static ArrayList<int[]> pRules() {
+    private static List<int[]> pRules() {
         ArrayList<int[]> moves = new ArrayList<>();
         int[] yOffsets = {1, 2, 3, 4, 5, 6, 7, 8};
         int[] xOffsets = {1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -153,7 +154,7 @@ public class Rules {
         return moves;
     }
 
-    private static ArrayList<int[]> xRules() {
+    private static List<int[]> xRules() {
         ArrayList<int[]> moves = new ArrayList<>();
         int[][] target = {{-2, -2}, {2, -2}, {-2, 2}, {2, 2}};
         int[][] obstacle = {{-1, -1}, {1, -1}, {-1, 1}, {1, 1}};
@@ -170,7 +171,7 @@ public class Rules {
         return moves;
     }
 
-    private static ArrayList<int[]> sRules() {
+    private static List<int[]> sRules() {
         ArrayList<int[]> moves = new ArrayList<>();
         int[][] target = {{-1, -1}, {1, 1}, {-1, 1}, {1, -1}};
         for (int[] aTarget : target) {
@@ -183,7 +184,7 @@ public class Rules {
         return moves;
     }
 
-    private static ArrayList<int[]> bRules() {
+    private static List<int[]> bRules() {
         ArrayList<int[]> moves = new ArrayList<>();
         /* 3*3 block */
         int[][] target = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
@@ -209,7 +210,7 @@ public class Rules {
         return moves;
     }
 
-    private static ArrayList<int[]> zRules() {
+    private static List<int[]> zRules() {
         ArrayList<int[]> moves = new ArrayList<>();
         int[][] targetU = {{0, 1}, {0, -1}, {-1, 0}};
         int[][] targetD = {{0, 1}, {0, -1}, {1, 0}};
