@@ -36,9 +36,11 @@ public class Rules {
         }
     }
 
-    /**棋子规则*/
+    /**
+     * 棋子规则
+     */
     private static ArrayList<int[]> mRules() {
-        ArrayList<int[]> moves = new ArrayList<int[]>();
+        ArrayList<int[]> moves = new ArrayList<>();
         int[][] target = {{1, -2}, {2, -1}, {2, 1}, {1, 2}, {-1, 2}, {-2, 1}, {-2, -1}, {-1, -2}};
         int[][] obstacle = {{0, -1}, {1, 0}, {1, 0}, {0, 1}, {0, 1}, {-1, 0}, {-1, 0}, {0, -1}};
         for (int i = 0; i < target.length; i++) {
@@ -55,7 +57,7 @@ public class Rules {
     }
 
     private static ArrayList<int[]> jRules() {
-        ArrayList<int[]> moves = new ArrayList<int[]>();
+        ArrayList<int[]> moves = new ArrayList<>();
         int[] yOffsets = {1, 2, 3, 4, 5, 6, 7, 8};
         int[] xOffsets = {1, 2, 3, 4, 5, 6, 7, 8, 9};
         for (int offset : yOffsets) {
@@ -94,7 +96,7 @@ public class Rules {
     }
 
     private static ArrayList<int[]> pRules() {
-        ArrayList<int[]> moves = new ArrayList<int[]>();
+        ArrayList<int[]> moves = new ArrayList<>();
         int[] yOffsets = {1, 2, 3, 4, 5, 6, 7, 8};
         int[] xOffsets = {1, 2, 3, 4, 5, 6, 7, 8, 9};
         boolean rr = false, ll = false, uu = false, dd = false;
@@ -152,13 +154,14 @@ public class Rules {
     }
 
     private static ArrayList<int[]> xRules() {
-        ArrayList<int[]> moves = new ArrayList<int[]>();
+        ArrayList<int[]> moves = new ArrayList<>();
         int[][] target = {{-2, -2}, {2, -2}, {-2, 2}, {2, 2}};
         int[][] obstacle = {{-1, -1}, {1, -1}, {-1, 1}, {1, 1}};
         for (int i = 0; i < target.length; i++) {
             int[] e = {pos[0] + target[i][0], pos[1] + target[i][1]};
             int[] f = {pos[0] + obstacle[i][0], pos[1] + obstacle[i][1]};
-            if (!board.isInside(e) || e[0] > 4 && player == 'b' || e[0] < 5 && player == 'r') continue;
+            if (!board.isInside(e) || e[0] > 4 && player == 'b' || e[0] < 5 && player == 'r')
+                continue;
             if (board.isEmpty(f)) {
                 if (board.isEmpty(e)) moves.add(e);
                 else if (board.getPiece(e).color != player) moves.add(e);
@@ -168,7 +171,7 @@ public class Rules {
     }
 
     private static ArrayList<int[]> sRules() {
-        ArrayList<int[]> moves = new ArrayList<int[]>();
+        ArrayList<int[]> moves = new ArrayList<>();
         int[][] target = {{-1, -1}, {1, 1}, {-1, 1}, {1, -1}};
         for (int[] aTarget : target) {
             int[] e = {pos[0] + aTarget[0], pos[1] + aTarget[1]};
@@ -181,7 +184,7 @@ public class Rules {
     }
 
     private static ArrayList<int[]> bRules() {
-        ArrayList<int[]> moves = new ArrayList<int[]>();
+        ArrayList<int[]> moves = new ArrayList<>();
         /* 3*3 block */
         int[][] target = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
         for (int[] aTarget : target) {
@@ -207,7 +210,7 @@ public class Rules {
     }
 
     private static ArrayList<int[]> zRules() {
-        ArrayList<int[]> moves = new ArrayList<int[]>();
+        ArrayList<int[]> moves = new ArrayList<>();
         int[][] targetU = {{0, 1}, {0, -1}, {-1, 0}};
         int[][] targetD = {{0, 1}, {0, -1}, {1, 0}};
         if (player == 'r') {

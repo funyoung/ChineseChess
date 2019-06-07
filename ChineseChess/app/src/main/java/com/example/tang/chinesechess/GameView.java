@@ -247,10 +247,12 @@ public class GameView extends View implements IGameView, View.OnTouchListener {
     }
 
     /**
-     * 选择棋子
+     * 选择棋子, 1. 点击前状态分已经选中一颗棋子，或者没有选中棋子
+     * 2. 当前点击的棋子分是本方棋子和对方棋子，最后本次选择棋子有3种可能结果
+     * A. 无效选择 B. 本次点击新选中本方棋子 C. 上次选择的棋子吃掉本次点中的对方棋子
      */
     public void pieceClickMove(Piece key) {
-        if (selectedPieceKey != null && key.key.charAt(0) != board.player) {//棋子吃棋子
+        if (selectedPieceKey != null && key.key.charAt(0) != board.player) { //棋子吃棋子
             int[] pos = board.pieces.get(key.key).position;
             int[] selectedPiecePos = board.pieces.get(selectedPieceKey.key).position;
             /* If an enemy piece already has been selected.*/
