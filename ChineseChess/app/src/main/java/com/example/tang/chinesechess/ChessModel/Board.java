@@ -9,9 +9,15 @@ import java.util.Map;
 public class Board {
 
     public final int BOARD_WIDTH = 9, BOARD_HEIGHT = 10;
-    public Map<String,Piece> pieces;/**棋子集合*/
-    public char player='r';/**红色玩家*/
+    /**
+     * 红色玩家
+     */
     private final Piece[][] cells = new Piece[BOARD_HEIGHT][BOARD_WIDTH];
+    public Map<String, Piece> pieces;
+    /**
+     * 棋子集合
+     */
+    public char player = 'r';
 
     public boolean isInside(int[] position) {
         return isInside(position[0], position[1]);
@@ -39,7 +45,9 @@ public class Board {
         return cells[x][y];
     }
 
-    /**位置更新*/
+    /**
+     * 位置更新
+     */
     public boolean update(Piece piece) {
         int[] pos = piece.position;
         cells[pos[0]][pos[1]] = piece;
