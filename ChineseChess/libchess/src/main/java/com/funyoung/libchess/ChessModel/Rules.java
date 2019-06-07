@@ -1,4 +1,4 @@
-package com.example.tang.chinesechess.ChessModel;
+package com.funyoung.libchess.ChessModel;
 
 import java.util.ArrayList;
 

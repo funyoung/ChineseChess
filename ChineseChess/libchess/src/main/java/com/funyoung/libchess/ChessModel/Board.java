@@ -1,4 +1,4 @@
-package com.example.tang.chinesechess.ChessModel;
+package com.funyoung.libchess.ChessModel;
 
 import java.util.Map;
 
@@ -76,5 +76,17 @@ public class Board {
         int[] origPos = pieces.get(key).position;
         cells[origPos[0]][origPos[1]] = pieces.get(key);
         return true;
+    }
+
+    public static char hasWin(Board board) {
+        /**
+         * Judge has the game ended.
+         * @return 'r' for RED wins, 'b' for BLACK wins, 'x' for game continues.
+         * */
+        boolean isRedWin = board.pieces.get("bb0") == null;
+        boolean isBlackWin = board.pieces.get("rb0") == null;
+        if (isRedWin) return 'r';
+        else if (isBlackWin) return 'b';
+        else return 'x';
     }
 }

@@ -1,14 +1,13 @@
 package com.example.tang.chinesechess;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.example.tang.chinesechess.ChessModel.Board;
+import com.funyoung.libchess.ChessModel.Board;
 import com.example.tang.chinesechess.ChessView.GameView;
 import com.example.tang.chinesechess.control.GameController;
 
@@ -63,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             super.run();
 
-            while (controller.hasWin(board) == 'x') {
+            while (Board.hasWin(board) == 'x') {
                 updataView();
             /* User in. */
                 while (board.player == 'r')
@@ -79,10 +78,10 @@ public class MainActivity extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                if (controller.hasWin(board) != 'x') {
+                if (Board.hasWin(board) != 'x') {
                     showWin('r');
                 }
-                if (controller.hasWin(board) != 'x') {
+                if (Board.hasWin(board) != 'x') {
                     interrupt();//中断线程
                 }
             /* AI in. */

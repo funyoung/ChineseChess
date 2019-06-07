@@ -1,10 +1,10 @@
 package com.example.tang.chinesechess.control;
 
-import com.example.tang.chinesechess.ChessModel.Board;
-import com.example.tang.chinesechess.ChessModel.Piece;
 import com.example.tang.chinesechess.ChessView.GameView;
-import com.example.tang.chinesechess.alogrithm.AlphaBetaNode;
-import com.example.tang.chinesechess.alogrithm.SearchModel;
+import com.funyoung.libchess.ChessModel.Board;
+import com.funyoung.libchess.ChessModel.Piece;
+import com.funyoung.libchess.alogrithm.AlphaBetaNode;
+import com.funyoung.libchess.alogrithm.SearchModel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -101,17 +101,5 @@ public class GameController {
         }
 
         System.out.println();
-    }
-
-    public char hasWin(Board board) {
-        /**
-         * Judge has the game ended.
-         * @return 'r' for RED wins, 'b' for BLACK wins, 'x' for game continues.
-         * */
-        boolean isRedWin = board.pieces.get("bb0") == null;
-        boolean isBlackWin = board.pieces.get("rb0") == null;
-        if (isRedWin) return 'r';
-        else if (isBlackWin) return 'b';
-        else return 'x';
     }
 }

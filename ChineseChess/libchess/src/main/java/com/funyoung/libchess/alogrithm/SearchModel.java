@@ -1,9 +1,8 @@
-package com.example.tang.chinesechess.alogrithm;
+package com.funyoung.libchess.alogrithm;
 
-import com.example.tang.chinesechess.ChessModel.Board;
-import com.example.tang.chinesechess.ChessModel.Piece;
-import com.example.tang.chinesechess.ChessModel.Rules;
-import com.example.tang.chinesechess.control.GameController;
+import com.funyoung.libchess.ChessModel.Board;
+import com.funyoung.libchess.ChessModel.Piece;
+import com.funyoung.libchess.ChessModel.Rules;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -14,7 +13,6 @@ import java.util.Map;
 public class SearchModel {
     private static int DEPTH = 2;
     private Board board;
-    private final GameController controller = new GameController();
 
     public AlphaBetaNode search(Board board) {
         this.board = board;
@@ -49,7 +47,7 @@ public class SearchModel {
     }
     private int alphaBeta(int depth, int alpha, int beta, boolean isMax) {
         /* Return evaluation if reaching leaf node or any side won.*/
-        if (depth == 0 || controller.hasWin(board) != 'x')
+        if (depth == 0 || Board.hasWin(board) != 'x')
             return new EvalModel().eval(board, 'b');
 
         ArrayList<AlphaBetaNode> moves = generateMovesForAll(isMax);

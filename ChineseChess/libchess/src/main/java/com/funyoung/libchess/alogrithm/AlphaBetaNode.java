@@ -1,4 +1,4 @@
-package com.example.tang.chinesechess.alogrithm;
+package com.funyoung.libchess.alogrithm;
 
 /**
  * Created by Tong on 12.18.

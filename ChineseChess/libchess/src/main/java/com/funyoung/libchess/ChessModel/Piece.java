@@ -1,4 +1,4 @@
-package com.example.tang.chinesechess.ChessModel;
+package com.funyoung.libchess.ChessModel;
 
 /**
  * Created by Tang on 2017/2/21.

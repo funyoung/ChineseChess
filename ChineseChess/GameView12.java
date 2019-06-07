@@ -20,9 +20,9 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.tang.chinesechess.ChessModel.Board;
-import com.example.tang.chinesechess.ChessModel.Piece;
-import com.example.tang.chinesechess.ChessModel.Rules;
+import com.funyoung.libchess.ChessModel.Board;
+import com.funyoung.libchess.ChessModel.Piece;
+import com.funyoung.libchess.ChessModel.Rules;
 import com.example.tang.chinesechess.R;
 import com.example.tang.chinesechess.control.GameController;
 

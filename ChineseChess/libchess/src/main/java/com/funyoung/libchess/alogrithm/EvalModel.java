@@ -1,8 +1,8 @@
-package com.example.tang.chinesechess.alogrithm;
+package com.funyoung.libchess.alogrithm;
 
-import com.example.tang.chinesechess.ChessModel.Board;
+import com.funyoung.libchess.ChessModel.Board;
 
-import com.example.tang.chinesechess.ChessModel.Piece;
+import com.funyoung.libchess.ChessModel.Piece;
 
 import java.util.Map;
 
