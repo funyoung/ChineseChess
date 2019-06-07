@@ -1,10 +1,10 @@
-package com.example.tang.chinesechess.control;
+package com.funyoung.libchess.control;
 
-import com.example.tang.chinesechess.ChessView.GameView;
 import com.funyoung.libchess.ChessModel.Board;
 import com.funyoung.libchess.ChessModel.Piece;
 import com.funyoung.libchess.alogrithm.AlphaBetaNode;
 import com.funyoung.libchess.alogrithm.SearchModel;
+import com.funyoung.libchess.view.IGameView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +14,6 @@ import java.util.Map;
  */
 
 public class GameController {
-
     /**初始化棋子图片和位置*/
     private Map<String, Piece> initPieces() {
         Map<String, Piece> pieces = new HashMap<String, Piece>();
@@ -58,8 +57,8 @@ public class GameController {
     private Board initBoard() {
         Board board = new Board();
         board.pieces = initPieces();
-        for (Map.Entry<String, Piece> stringPieceEntry : initPieces().entrySet())
-            board.update(stringPieceEntry.getValue());
+        for (Piece piece : board.pieces.values())
+            board.update(piece);
         return board;
     }
     /**开始游戏*/
@@ -78,7 +77,7 @@ public class GameController {
         board.updatePiece(key, position);
     }
 
-    public void responseMoveChess(Board board, GameView view) {
+    public void responseMoveChess(Board board, IGameView view) {
         /**
          * Implements artificial intelligence.
          * */
@@ -86,20 +85,5 @@ public class GameController {
         AlphaBetaNode result = searchModel.search(board);
         board.updatePiece(result.piece, result.to);
         view.movePieceFromAI(result.piece, result.to);
-    }
-
-    public void printBoard(Board board) {
-        /**
-         * Piece position is stored internally as [row, col], but output standard requires [col,row].
-         * Here comes the conversion.
-         * eg. [0, 4] --> [E, 0]
-         * */
-        Map<String, Piece> pieces = board.pieces;
-        for (Map.Entry<String, Piece> stringPieceEntry : pieces.entrySet()) {
-            Piece piece = stringPieceEntry.getValue();
-            System.out.println(stringPieceEntry.getKey() + ":" + (char) (piece.position[1] + 'A') + piece.position[0]);
-        }
-
-        System.out.println();
     }
 }

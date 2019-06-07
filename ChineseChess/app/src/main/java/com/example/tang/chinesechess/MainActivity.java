@@ -5,48 +5,29 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
+import com.funyoung.libchess.view.IGameView;
+import com.funyoung.libchess.control.GameController;
 import com.funyoung.libchess.ChessModel.Board;
-import com.example.tang.chinesechess.ChessView.GameView;
-import com.example.tang.chinesechess.control.GameController;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final int UPDATA_VIEW=123;
-    private final int SHOW_WIN=321;
+    private final static int UPDATE_VIEW = 123;
+    private final static int SHOW_WIN = 321;
+
     private Board board;
-
     private GameController controller;
-    private GameView gameView;
-    private ImageView playerImage;
+    private IGameView gameView;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        init();
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-        this.addContentView(gameView, params);
-        //gameView.invalidate();
-    }
-
-    private void init() {
-        controller = new GameController();
-        board = controller.playChess();
-        gameView = new GameView(this, controller, board);
-        myThread th = new myThread();
-        th.start();
-    }
-
-    /**消息队列*/
+    /**
+     * 消息队列
+     */
     Handler myHandler = new Handler() {
         // 接收到消息后处理
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case UPDATA_VIEW:
+                case UPDATE_VIEW:
                     gameView.postInvalidate(); // 刷新界面
                     break;
                 case SHOW_WIN:
@@ -57,37 +38,73 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        init();
+    }
+
+    private void init() {
+        controller = new GameController();
+        board = controller.playChess();
+        gameView = initGameView();
+
+        myThread th = new myThread();
+        th.start();
+    }
+
+    // todo: move into factory methods
+    private IGameView initGameView() {
+        GameView contentView = new GameView(this, controller, board);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+        this.addContentView(contentView, params);
+        return contentView;
+    }
+
+
     class myThread extends Thread {
         @Override
         public void run() {
             super.run();
 
             while (Board.hasWin(board) == 'x') {
-                updataView();
-            /* User in. */
-                while (board.player == 'r')
+                updateView();
+
+                /* User in. */
+                while (board.player == 'r') {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                updataView();
+                }
+
+                updateView();
                 /* 界面更新缓冲*/
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
                 if (Board.hasWin(board) != 'x') {
                     showWin('r');
                 }
+
                 if (Board.hasWin(board) != 'x') {
                     interrupt();//中断线程
                 }
-            /* AI in. */
+
+                /* AI in. */
                 controller.responseMoveChess(board, gameView);
+
                 /* 更新界面*/
-                updataView();
+                updateView();
+
                 /* 界面更新缓冲*/
                 try {
                     Thread.sleep(500);
@@ -95,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
+
             /**黑棋赢*/
             showWin('b');
         }
@@ -107,14 +125,13 @@ public class MainActivity extends AppCompatActivity {
             msg.setData(bundle);
             myHandler.sendMessage(msg);
         }
-        private void updataView() {
+
+        private void updateView() {
             Message message;
             message = new Message();
-            message.what = UPDATA_VIEW;
+            message.what = UPDATE_VIEW;
             myHandler.sendMessage(message);
         }
     }
-
-
 }
 

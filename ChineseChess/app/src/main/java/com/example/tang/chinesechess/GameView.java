@@ -1,4 +1,4 @@
-package com.example.tang.chinesechess.ChessView;
+package com.example.tang.chinesechess;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,9 +16,8 @@ import android.view.View;
 import com.funyoung.libchess.ChessModel.Board;
 import com.funyoung.libchess.ChessModel.Piece;
 import com.funyoung.libchess.ChessModel.Rules;
-import com.example.tang.chinesechess.MainActivity;
-import com.example.tang.chinesechess.R;
-import com.example.tang.chinesechess.control.GameController;
+import com.funyoung.libchess.control.GameController;
+import com.funyoung.libchess.view.IGameView;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,10 +27,12 @@ import java.util.Map;
  * Created by Tang on 2017/2/23.
  */
 
-public class GameView extends View implements View.OnTouchListener {
+public class GameView extends View implements IGameView, View.OnTouchListener {
     private final Map<String, Bitmap> bitmapMap = new HashMap<>();
     private final Paint mPaint = new Paint();
     private final Context context;
+    private Drawable selectionDrawable;
+
     private int VIEW_WIDTH;/* 界面宽度*/
     private int VIEW_HEIGHT;/* 界面高度*/
     private int PIECE_WIDTH = 67, PIECE_HEIGHT = 67;/* 棋子大小*/
@@ -42,7 +43,6 @@ public class GameView extends View implements View.OnTouchListener {
     private Board board;
     private Piece selectedPieceKey;
 
-    private Drawable selectionDrawable;
 
     public GameView(Context context) {
         this(context, null);
@@ -131,16 +131,6 @@ public class GameView extends View implements View.OnTouchListener {
         for (Piece piece : board.pieces.values()) {
             draw(canvas, piece);
         }
-
-//        Map<Piece, Bitmap> bitmaps = bitmapMap;
-//        for (Map.Entry<Piece, Bitmap> stringPieceEntry : bitmaps.entrySet()) {
-//            int[] pos = stringPieceEntry.getKey().position;
-//            int[] sPos = modelToViewConverter(pos);
-//            pos = viewToModelConverter(sPos);
-//            Bitmap bitmap = stringPieceEntry.getValue();
-//            bitmap = scaleBitmap(bitmap);
-//            canvas.drawBitmap(bitmap, sPos[0], sPos[1], mPaint);
-//        }
     }
 
     private void draw(Canvas canvas, Piece pieceKey) {
@@ -209,13 +199,6 @@ public class GameView extends View implements View.OnTouchListener {
                 return piece;
             }
         }
-
-//        Map<Piece, Bitmap> bitmaps = bitmapMap;
-//        for (Piece pieceKey : bitmaps.keySet()) {
-//            if (coordinateIsPiece(pieceKey, x, y)) {
-//                return
-//            }
-//        }
 
         return null;
     }
