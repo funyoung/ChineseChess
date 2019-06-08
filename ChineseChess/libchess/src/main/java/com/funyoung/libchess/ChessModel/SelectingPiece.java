@@ -43,4 +43,8 @@ public class SelectingPiece {
 
         return false;
     }
+
+    public List<int[]> getNextMoveList() {
+        return nextMoveList;
+    }
 }

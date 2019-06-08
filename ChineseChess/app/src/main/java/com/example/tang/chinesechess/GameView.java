@@ -15,12 +15,10 @@ import android.view.View;
 
 import com.funyoung.libchess.ChessModel.Board;
 import com.funyoung.libchess.ChessModel.Piece;
-import com.funyoung.libchess.ChessModel.Rules;
 import com.funyoung.libchess.ChessModel.SelectingPiece;
 import com.funyoung.libchess.control.GameController;
 import com.funyoung.libchess.view.IGameView;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +31,10 @@ public class GameView extends View implements IGameView, View.OnTouchListener {
     private final Paint mPaint = new Paint();
     private final Context context;
     private final SelectingPiece selectingPiece = new SelectingPiece();
+
     private Drawable selectionDrawable;
+    private Drawable nextDrawable;
+
     private int VIEW_WIDTH;/* 界面宽度*/
     private int VIEW_HEIGHT;/* 界面高度*/
     private int PIECE_WIDTH = 67, PIECE_HEIGHT = 67;/* 棋子大小*/
@@ -67,6 +68,7 @@ public class GameView extends View implements IGameView, View.OnTouchListener {
         this.controller = gameController;
         board = gameBoard;
         selectionDrawable = getResources().getDrawable(R.drawable.ring);
+        nextDrawable = getResources().getDrawable(R.drawable.next);
     }
 
     /**
@@ -143,12 +145,27 @@ public class GameView extends View implements IGameView, View.OnTouchListener {
         Bitmap bitmap = bitmapMap.get(pieceKey.key);
         bitmap = scaleBitmap(bitmap);
         canvas.drawBitmap(bitmap, sPos[0], sPos[1], mPaint);
-        if (selectingPiece.isSameKey(pieceKey.key)) {
-            selectionDrawable.setBounds(sPos[0], sPos[1],
-                    sPos[0] + bitmap.getWidth(),
-                    sPos[1] + bitmap.getHeight());
-            selectionDrawable.draw(canvas);
+
+        if (selectingPiece.hasSelection()) {
+            int width = bitmap.getWidth();
+            int height = bitmap.getHeight();
+
+            if (selectingPiece.isSameKey(pieceKey.key)) {
+                draw(canvas, selectionDrawable, sPos, width, height);
+            }
+
+            for (int[] each : selectingPiece.getNextMoveList()) {
+                int[] nextPos = modelToViewConverter(each);
+                draw(canvas, nextDrawable, nextPos, width, height);
+            }
         }
+    }
+
+    private void draw(Canvas canvas, Drawable selectionDrawable, int[] sPos, int width, int height) {
+        selectionDrawable.setBounds(sPos[0], sPos[1],
+                sPos[0] + width,
+                sPos[1] + height);
+        selectionDrawable.draw(canvas);
     }
 
     /**
@@ -355,7 +372,6 @@ public class GameView extends View implements IGameView, View.OnTouchListener {
     }
 
     public void showWin(char r) {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(r + "is Winner");
         builder.setTitle("提示");
