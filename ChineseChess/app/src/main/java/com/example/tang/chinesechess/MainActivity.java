@@ -1,14 +1,17 @@
 package com.example.tang.chinesechess;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
 
-import com.funyoung.libchess.view.IGameView;
-import com.funyoung.libchess.control.GameController;
-import com.funyoung.libchess.ChessModel.Board;
+import com.funyoung.andchess.GameView;
+import com.funyoung.andchess.view.IGameView;
+import com.funyoung.andchess.control.GameController;
+import com.funyoung.andchess.ChessModel.Board;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
                     gameView.postInvalidate(); // 刷新界面
                     break;
                 case SHOW_WIN:
-                    gameView.showWin(msg.getData().getChar("win"));
+                    showWin(msg.getData().getChar("win"));
                     break;
             }
             super.handleMessage(msg);
@@ -132,6 +135,18 @@ public class MainActivity extends AppCompatActivity {
             message.what = UPDATE_VIEW;
             myHandler.sendMessage(message);
         }
+    }
+
+    public void showWin(char r) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(r + "is Winner");
+        builder.setTitle("提示");
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        }).create().show();
     }
 }
 

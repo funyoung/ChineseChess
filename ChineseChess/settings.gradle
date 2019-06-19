@@ -1,1 +1,1 @@
-include ':app', ':libchess'
+include ':app', ':andchess', ':libchess'
