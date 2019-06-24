@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import com.funyoung.andchess.ChessModel.Piece;
 import com.funyoung.andchess.ChessModel.SelectingPiece;
 import com.funyoung.andchess.control.GameController;
-import com.funyoung.andchess.view.IGameView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,14 +30,14 @@ public class GamePresenter extends GameController {
         return resources;
     }
 
-    public GamePresenter(IGameView gameView, Resources resources) {
+    public GamePresenter(GameView gameView, Resources resources) {
         super(gameView);
 
         this.resources = resources;
         selectionDrawable = getDrawable(R.drawable.ring);
         nextDrawable = getDrawable(R.drawable.next);
 
-        ((GameView)gameView).setup(this);
+        gameView.setup(this);
     }
 
     /**
@@ -46,7 +45,7 @@ public class GamePresenter extends GameController {
      */
     protected void init() {
         Map<String, Drawable> currentBitmapMap = new HashMap<>();
-        for (String key : board.pieces.keySet()) {
+        for (String key : getKeySet()) {
             Drawable bitmap = getBitmapForPiece(key);
             if (null != bitmap) {
                 currentBitmapMap.put(key, bitmap);
@@ -96,6 +95,10 @@ public class GamePresenter extends GameController {
     }
 
     protected void updateSize(int width, int height) {
+        if (VIEW_WIDTH == width && VIEW_HEIGHT == height) {
+            return;
+        }
+
         /* 屏幕适配 */
         VIEW_WIDTH = width;
         VIEW_HEIGHT = height;
@@ -112,7 +115,7 @@ public class GamePresenter extends GameController {
     protected void onDraw(Canvas canvas) {
         /* 绘制棋子 */
         drawChess(canvas);
-        drawPlayer(board.player, canvas);
+        drawPlayer(canvas);
     }
 
 
@@ -120,7 +123,7 @@ public class GamePresenter extends GameController {
      * 绘制棋子
      */
     private void drawChess(Canvas canvas) {
-        for (Piece piece : board.pieces.values()) {
+        for (Piece piece : getPieces()) {
             draw(canvas, piece);
         }
     }
@@ -132,10 +135,9 @@ public class GamePresenter extends GameController {
 
         int[] pos = pieceKey.position;
         int[] sPos = modelToViewConverter(pos);
-        pos = viewToModelConverter(sPos);
+        viewToModelConverter(sPos);
         Drawable bitmap = bitmapMap.get(pieceKey.key);
-        bitmap = scaleBitmap(bitmap, sPos[0], sPos[1]);
-        //canvas.drawBitmap(bitmap, sPos[0], sPos[1], mPaint);
+        scaleBitmap(bitmap, sPos[0], sPos[1]);
         bitmap.draw(canvas);
 
         if (selectingPiece.hasSelection()) {
@@ -160,25 +162,25 @@ public class GamePresenter extends GameController {
         selectionDrawable.draw(canvas);
     }
 
-    private Drawable scaleBitmap(Drawable drawable, int left, int top) {
+    private void scaleBitmap(Drawable drawable, int left, int top) {
         int width = PIECE_WIDTH;
         int height = PIECE_WIDTH;
         int right = left + width;
         int bottom = top + height;
         drawable.setBounds(left, top, right, bottom);
-        return drawable;
     }
 
     /**
      * 绘制角色图标
      */
-    public void drawPlayer(char player, Canvas canvas) {
+    public void drawPlayer(Canvas canvas) {
         int xc = VIEW_WIDTH / 2 - PIECE_WIDTH / 2;
         int yc = VIEW_HEIGHT / 2 - PIECE_HEIGHT / 2;
-        Drawable drawable = player == 'r' ? getDrawable(R.drawable.r) : getDrawable(R.drawable.b);
-        Drawable d = scaleBitmap(drawable, xc, yc);
+
+        Drawable drawable = isPlayer() ? getDrawable(R.drawable.r) : getDrawable(R.drawable.b);
+        scaleBitmap(drawable, xc, yc);
         //canvas.drawBitmap(d, xc, yc, mPaint);
-        d.draw(canvas);
+        drawable.draw(canvas);
     }
 
     /**
@@ -204,8 +206,8 @@ public class GamePresenter extends GameController {
      */
     private Piece coordinateIsPiece(float x, float y) {
         for (String key : bitmapMap.keySet()) {
-            Piece piece = board.pieces.get(key);
-            if (coordinateIsPiece(piece, x, y)) {
+            Piece piece = getPiece(key);
+            if (coordinateIsPiece(piece.position, x, y)) {
                 return piece;
             }
         }
@@ -213,8 +215,7 @@ public class GamePresenter extends GameController {
         return null;
     }
 
-    private boolean coordinateIsPiece(Piece pieceKey, float x, float y) {
-        int[] pos = pieceKey.position;
+    private boolean coordinateIsPiece(int[] pos, float x, float y) {
         int[] sPos = modelToViewConverter(pos);
         if (sPos[0] + PIECE_WIDTH >= x && sPos[1] + PIECE_HEIGHT >= y
                 && sPos[0] <= x && sPos[1] <= y) {
@@ -229,7 +230,7 @@ public class GamePresenter extends GameController {
         //invalidate();
         if (!hasWin()) {
             showWinner('r');
-        } else if (board.player == 'b') {
+        } else if (!isPlayer()) {
             /** UI */
             //responseMoveChess(board,this);
         }
@@ -242,7 +243,7 @@ public class GamePresenter extends GameController {
         //invalidate();
         if (!hasWin()) {
             showWinner('b');
-        } else if (board.player == 'b') {
+        } else if (!isPlayer()) {
             /** UI */
             //responseMoveChess(board,this);
         }
@@ -263,17 +264,18 @@ public class GamePresenter extends GameController {
      * A. 无效选择 B. 本次点击新选中本方棋子 C. 上次选择的棋子吃掉本次点中的对方棋子
      */
     public void pieceClickMove(Piece key) {
-        if (selectingPiece.hasSelection() && key.key.charAt(0) != board.player) { //棋子吃棋子
-            int[] pos = board.pieces.get(key.key).position;
+        boolean isPlayer = isPlayer(key.key);
+        if (selectingPiece.hasSelection() && !isPlayer) { //棋子吃棋子
+            int[] pos = getPiece(key.key).position;
 
             /* If an enemy piece already has been selected.*/
             if (selectingPiece.hasMovingTarget(pos)) {
                 bitmapMap.remove(key);
-                moveChess(selectingPiece.getKey(), pos, board);
+                moveChess(selectingPiece.getKey(), pos);
                 movePieceFromModel(selectingPiece.getKey(), pos);
             }
-        } else if (key.key.charAt(0) == board.player) {
-            selectingPiece.select(key, board);
+        } else if (isPlayer) {
+            select(selectingPiece, key);
             /* Select the piece.*/
             // todo: only invalidate the selected area
             invalidate();
@@ -288,7 +290,7 @@ public class GamePresenter extends GameController {
             int[] sPos = {point[0], point[1]};
             int[] pos = viewToModelConverter(sPos);
             if (selectingPiece.hasMovingTarget(pos)) {
-                moveChess(selectingPiece.getKey(), pos, board);
+                moveChess(selectingPiece.getKey(), pos);
                 movePieceFromModel(selectingPiece.getKey(), pos);
             }
 //            int[] selectedPiecePos = board.pieces.get(selectingPiece.getKey()).position;

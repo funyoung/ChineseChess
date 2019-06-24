@@ -2,19 +2,22 @@ package com.funyoung.andchess.control;
 
 import com.funyoung.andchess.ChessModel.Board;
 import com.funyoung.andchess.ChessModel.Piece;
+import com.funyoung.andchess.ChessModel.SelectingPiece;
 import com.funyoung.andchess.alogrithm.AlphaBetaNode;
 import com.funyoung.andchess.alogrithm.SearchModel;
 import com.funyoung.andchess.view.IGameView;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Tang on 2017/2/22.
  */
 
 public class GameController {
-    protected final Board board;
+    private final Board board;
     private final IGameView gameView;
 
     public GameController(IGameView gameView) {
@@ -78,7 +81,7 @@ public class GameController {
         return initBoard();
     }
 
-    public void moveChess(String key, int[] position, Board board) {
+    public void moveChess(String key, int[] position) {
         /**
          * Implements user's action.
          * */
@@ -109,6 +112,30 @@ public class GameController {
 
     protected void invalidate() {
         gameView.postInvalidate();
+    }
+
+    protected Set<String> getKeySet() {
+        return board.pieces.keySet();
+    }
+
+    protected Collection<Piece> getPieces() {
+        return board.pieces.values();
+    }
+
+    protected boolean isPlayer() {
+        return board.player == 'r';
+    }
+
+    protected boolean isPlayer(String key) {
+        return key.charAt(0) == board.player;
+    }
+
+    protected Piece getPiece(String key) {
+        return board.pieces.get(key);
+    }
+
+    protected void select(SelectingPiece selectingPiece, Piece key) {
+        selectingPiece.select(key, board);
     }
 
     // todo: merge with GamePresenter.movePieceFromAI or make it abstract
