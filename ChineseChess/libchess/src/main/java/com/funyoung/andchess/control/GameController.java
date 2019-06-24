@@ -14,14 +14,12 @@ import java.util.Map;
  */
 
 public class GameController {
-    private final Board board;
+    protected final Board board;
     private final IGameView gameView;
 
     public GameController(IGameView gameView) {
         this.gameView = gameView;
         board = playChess();
-
-        gameView.setup(this, board);
     }
 
     /**初始化棋子图片和位置*/
@@ -94,7 +92,7 @@ public class GameController {
         SearchModel searchModel = new SearchModel();
         AlphaBetaNode result = searchModel.search(board);
         board.updatePiece(result.piece, result.to);
-        gameView.movePieceFromAI(result.piece, result.to);
+        movePieceFromAI(result.piece, result.to);
     }
 
     public void postInvalidate() {
@@ -107,5 +105,14 @@ public class GameController {
 
     public boolean isUserIn() {
         return board.player == 'r';
+    }
+
+    protected void invalidate() {
+        gameView.postInvalidate();
+    }
+
+    // todo: merge with GamePresenter.movePieceFromAI or make it abstract
+    public void movePieceFromAI(String pieceKey, int[] to) {
+
     }
 }

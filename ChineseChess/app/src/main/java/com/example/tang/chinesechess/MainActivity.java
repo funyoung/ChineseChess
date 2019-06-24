@@ -6,20 +6,17 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.FrameLayout;
 
+import com.funyoung.andchess.GamePresenter;
 import com.funyoung.andchess.GameView;
-import com.funyoung.andchess.view.IGameView;
-import com.funyoung.andchess.control.GameController;
-import com.funyoung.andchess.ChessModel.Board;
 
 public class MainActivity extends AppCompatActivity {
 
     private final static int UPDATE_VIEW = 123;
     private final static int SHOW_WIN = 321;
 
-    private GameController controller;
+    private GamePresenter controller;
 
     /**
      * 消息队列
@@ -50,22 +47,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
-        IGameView gameView = initGameView();
-        controller = new GameController(gameView);
+        GameView gameView = new GameView(this);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT);
+        this.addContentView(gameView, params);
+
+        controller = new GamePresenter(gameView, getResources());
 
         myThread th = new myThread();
         th.start();
     }
-
-    // todo: move into factory methods
-    private IGameView initGameView() {
-        GameView gameView = new GameView(this);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-        this.addContentView(gameView, params);
-        return gameView;
-    }
-
 
     class myThread extends Thread {
         @Override
