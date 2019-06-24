@@ -1,11 +1,7 @@
 package com.funyoung.andchess;
 
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 
 import com.funyoung.andchess.ChessModel.Piece;
@@ -17,8 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GamePresenter extends GameController {
-    private final Map<String, Bitmap> bitmapMap = new HashMap<>();
-    private final Paint mPaint = new Paint();
+    private final Map<String, Drawable> bitmapMap = new HashMap<>();
     private final SelectingPiece selectingPiece = new SelectingPiece();
 
     private Drawable selectionDrawable;
@@ -29,7 +24,6 @@ public class GamePresenter extends GameController {
     private int PIECE_WIDTH = 67, PIECE_HEIGHT = 67;/* 棋子大小*/
     private int SY_COE = 68, SX_COE = 68;/* 棋盘内间隔*/
     private int SX_OFFSET = 50, SY_OFFSET = 15; /* 棋盘和屏幕间隔*/
-    //private Board board;
 
     private final Resources resources;
 
@@ -39,23 +33,21 @@ public class GamePresenter extends GameController {
 
     public GamePresenter(IGameView gameView, Resources resources) {
         super(gameView);
-        //this.board = super.board;
-        //board = gameBoard;
+
         this.resources = resources;
-        selectionDrawable = getResources().getDrawable(R.drawable.ring);
-        nextDrawable = getResources().getDrawable(R.drawable.next);
+        selectionDrawable = getDrawable(R.drawable.ring);
+        nextDrawable = getDrawable(R.drawable.next);
 
         ((GameView)gameView).setup(this);
     }
-
 
     /**
      * 保存图片
      */
     protected void init() {
-        Map<String, Bitmap> currentBitmapMap = new HashMap<>();
+        Map<String, Drawable> currentBitmapMap = new HashMap<>();
         for (String key : board.pieces.keySet()) {
-            Bitmap bitmap = getBitmapForPiece(key);
+            Drawable bitmap = getBitmapForPiece(key);
             if (null != bitmap) {
                 currentBitmapMap.put(key, bitmap);
             }
@@ -65,40 +57,40 @@ public class GamePresenter extends GameController {
         currentBitmapMap.clear();
     }
 
-    private Bitmap getBitmapForPiece(String key) {
+    private Drawable getBitmapForPiece(String key) {
         if (bitmapMap.containsKey(key)) {
             return bitmapMap.get(key);
         }
 
-        Bitmap bitmap = null;
+        Drawable bitmap = null;
         if (key.startsWith("bj")) {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bj);
+            bitmap = getDrawable(R.drawable.bj);
         } else if (key.startsWith("bm")) {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bm);
+            bitmap = getDrawable(R.drawable.bm);
         } else if (key.startsWith("bx")) {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bx);
+            bitmap = getDrawable(R.drawable.bx);
         } else if (key.startsWith("bs")) {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bs);
+            bitmap = getDrawable(R.drawable.bs);
         } else if (key.startsWith("bb")) {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bb);
+            bitmap = getDrawable(R.drawable.bb);
         } else if (key.startsWith("bp")) {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bp);
+            bitmap = getDrawable(R.drawable.bp);
         } else if (key.startsWith("bz")) {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bz);
+            bitmap = getDrawable(R.drawable.bz);
         } else if (key.startsWith("rj")) {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.rj);
+            bitmap = getDrawable(R.drawable.rj);
         } else if (key.startsWith("rm")) {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.rm);
+            bitmap = getDrawable(R.drawable.rm);
         } else if (key.startsWith("rx")) {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.rx);
+            bitmap = getDrawable(R.drawable.rx);
         } else if (key.startsWith("rs")) {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.rs);
+            bitmap = getDrawable(R.drawable.rs);
         } else if (key.startsWith("rb")) {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.rb);
+            bitmap = getDrawable(R.drawable.rb);
         } else if (key.startsWith("rp")) {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.rp);
+            bitmap = getDrawable(R.drawable.rp);
         } else if (key.startsWith("rz")) {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.rz);
+            bitmap = getDrawable(R.drawable.rz);
         }
         return bitmap;
     }
@@ -141,13 +133,14 @@ public class GamePresenter extends GameController {
         int[] pos = pieceKey.position;
         int[] sPos = modelToViewConverter(pos);
         pos = viewToModelConverter(sPos);
-        Bitmap bitmap = bitmapMap.get(pieceKey.key);
-        bitmap = scaleBitmap(bitmap);
-        canvas.drawBitmap(bitmap, sPos[0], sPos[1], mPaint);
+        Drawable bitmap = bitmapMap.get(pieceKey.key);
+        bitmap = scaleBitmap(bitmap, sPos[0], sPos[1]);
+        //canvas.drawBitmap(bitmap, sPos[0], sPos[1], mPaint);
+        bitmap.draw(canvas);
 
         if (selectingPiece.hasSelection()) {
-            int width = bitmap.getWidth();
-            int height = bitmap.getHeight();
+            int width = PIECE_WIDTH; //bitmap.getWidth();
+            int height = PIECE_WIDTH; //bitmap.getHeight();
 
             if (selectingPiece.isSameKey(pieceKey.key)) {
                 draw(canvas, selectionDrawable, sPos, width, height);
@@ -167,34 +160,25 @@ public class GamePresenter extends GameController {
         selectionDrawable.draw(canvas);
     }
 
-    /**
-     * 缩放图片
-     */
-    private Bitmap scaleBitmap(Bitmap bitMap) {
-        int width = bitMap.getWidth();
-        int height = bitMap.getHeight();
-        // 设置想要的大小
-        int newWidth = PIECE_WIDTH;
-        int newHeight = PIECE_WIDTH;
-        // 计算缩放比例
-        float scaleWidth = (float) newWidth / width;
-        float scaleHeight = (float) newHeight / height;
-        // 取得想要缩放的matrix参数
-        Matrix matrix = new Matrix();
-        matrix.postScale(scaleWidth, scaleHeight);
-        // 得到新的图片
-        return Bitmap.createBitmap(bitMap, 0, 0, width, height, matrix, true);
+    private Drawable scaleBitmap(Drawable drawable, int left, int top) {
+        int width = PIECE_WIDTH;
+        int height = PIECE_WIDTH;
+        int right = left + width;
+        int bottom = top + height;
+        drawable.setBounds(left, top, right, bottom);
+        return drawable;
     }
 
     /**
      * 绘制角色图标
      */
     public void drawPlayer(char player, Canvas canvas) {
-        if (player == 'r') {
-            canvas.drawBitmap(scaleBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.r)), VIEW_WIDTH / 2 - PIECE_WIDTH / 2, VIEW_HEIGHT / 2 - PIECE_HEIGHT / 2, mPaint);
-        } else {
-            canvas.drawBitmap(scaleBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.b)), VIEW_WIDTH / 2 - PIECE_WIDTH / 2, VIEW_HEIGHT / 2 - PIECE_HEIGHT / 2, mPaint);
-        }
+        int xc = VIEW_WIDTH / 2 - PIECE_WIDTH / 2;
+        int yc = VIEW_HEIGHT / 2 - PIECE_HEIGHT / 2;
+        Drawable drawable = player == 'r' ? getDrawable(R.drawable.r) : getDrawable(R.drawable.b);
+        Drawable d = scaleBitmap(drawable, xc, yc);
+        //canvas.drawBitmap(d, xc, yc, mPaint);
+        d.draw(canvas);
     }
 
     /**
@@ -269,7 +253,6 @@ public class GamePresenter extends GameController {
      * 显示游戏结果
      */
     public void showWinner(char player) {
-
         //((MainActivity)context).finish();
         //System.exit(0);
     }
@@ -326,5 +309,9 @@ public class GamePresenter extends GameController {
         } else {
             boardClickMove(new int[]{(int) x, (int) y});
         }
+    }
+
+    private Drawable getDrawable(int resId) {
+        return getResources().getDrawable(resId);
     }
 }
