@@ -1,14 +1,12 @@
 package com.funyoung.andchess;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -52,19 +50,9 @@ public class GameView extends View implements IGameView, View.OnTouchListener {
         super(context, attrs);
 
         this.context = context;
-        setup(null, null);
     }
 
-    public GameView(Context context, GameController gameController, Board gameBoard) {
-        super(context);
-
-        this.context = context;
-        setup(gameController, gameBoard);
-        //((ImageView)((MainActivity)context).findViewById(R.id.playImage)).setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.b));
-        //init();
-    }
-
-    private void setup(GameController gameController, Board gameBoard) {
+    public void setup(GameController gameController, Board gameBoard) {
         this.controller = gameController;
         board = gameBoard;
         selectionDrawable = getResources().getDrawable(R.drawable.ring);

@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import com.funyoung.andchess.GameView;
@@ -18,9 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private final static int UPDATE_VIEW = 123;
     private final static int SHOW_WIN = 321;
 
-    private Board board;
     private GameController controller;
-    private IGameView gameView;
 
     /**
      * 消息队列
@@ -31,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case UPDATE_VIEW:
-                    gameView.postInvalidate(); // 刷新界面
+                    controller.postInvalidate();
                     break;
                 case SHOW_WIN:
                     showWin(msg.getData().getChar("win"));
@@ -51,9 +50,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
-        controller = new GameController();
-        board = controller.playChess();
-        gameView = initGameView();
+        IGameView gameView = initGameView();
+        controller = new GameController(gameView);
 
         myThread th = new myThread();
         th.start();
@@ -61,11 +59,11 @@ public class MainActivity extends AppCompatActivity {
 
     // todo: move into factory methods
     private IGameView initGameView() {
-        GameView contentView = new GameView(this, controller, board);
+        GameView gameView = new GameView(this);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-        this.addContentView(contentView, params);
-        return contentView;
+        this.addContentView(gameView, params);
+        return gameView;
     }
 
 
@@ -74,11 +72,11 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             super.run();
 
-            while (Board.hasWin(board) == 'x') {
+            while (controller.hasWin()) {
                 updateView();
 
                 /* User in. */
-                while (board.player == 'r') {
+                while (controller.isUserIn()) {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
@@ -94,16 +92,16 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                if (Board.hasWin(board) != 'x') {
+                if (!controller.hasWin()) {
                     showWin('r');
                 }
 
-                if (Board.hasWin(board) != 'x') {
+                if (!controller.hasWin()) {
                     interrupt();//中断线程
                 }
 
                 /* AI in. */
-                controller.responseMoveChess(board, gameView);
+                controller.responseMoveChess();
 
                 /* 更新界面*/
                 updateView();

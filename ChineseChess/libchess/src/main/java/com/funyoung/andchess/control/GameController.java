@@ -14,6 +14,16 @@ import java.util.Map;
  */
 
 public class GameController {
+    private final Board board;
+    private final IGameView gameView;
+
+    public GameController(IGameView gameView) {
+        this.gameView = gameView;
+        board = playChess();
+
+        gameView.setup(this, board);
+    }
+
     /**初始化棋子图片和位置*/
     private Map<String, Piece> initPieces() {
         Map<String, Piece> pieces = new HashMap<String, Piece>();
@@ -77,13 +87,25 @@ public class GameController {
         board.updatePiece(key, position);
     }
 
-    public void responseMoveChess(Board board, IGameView view) {
+    public void responseMoveChess() {
         /**
          * Implements artificial intelligence.
          * */
         SearchModel searchModel = new SearchModel();
         AlphaBetaNode result = searchModel.search(board);
         board.updatePiece(result.piece, result.to);
-        view.movePieceFromAI(result.piece, result.to);
+        gameView.movePieceFromAI(result.piece, result.to);
+    }
+
+    public void postInvalidate() {
+        gameView.postInvalidate(); // 刷新界面
+    }
+
+    public boolean hasWin() {
+        return Board.hasWin(board) == 'x';
+    }
+
+    public boolean isUserIn() {
+        return board.player == 'r';
     }
 }
