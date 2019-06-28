@@ -4,7 +4,6 @@ import com.funyoung.andchess.ChessModel.Board;
 import com.funyoung.andchess.ChessModel.Piece;
 import com.funyoung.andchess.ChessModel.Rules;
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Created by Tang on 12.08.
@@ -53,7 +52,7 @@ public class SearchModel {
 
     private int alphaBeta(int depth, int alpha, int beta, boolean isMax) {
         /* Return evaluation if reaching leaf node or any side won.*/
-        if (depth == 0 || Board.hasWin(board) != 'x')
+        if (depth == 0 || board.isDead())
             return new EvalModel().eval(board, 'b');
 
         ArrayList<AlphaBetaNode> moves = generateMovesForAll(isMax);
@@ -104,9 +103,9 @@ public class SearchModel {
     private ArrayList<AlphaBetaNode> generateMovesForAll(boolean isMax) {
         ArrayList<AlphaBetaNode> moves = new ArrayList<AlphaBetaNode>();
         for (Piece piece : board.values()) {
-            if (isMax && piece.color == 'r') continue;
-            if (!isMax && piece.color == 'b') continue;
-            for (int[] nxt : Rules.getNextMove(piece.key, piece.position, board))
+            if (isMax && piece.isRed()) continue;
+            if (!isMax && !piece.isRed()) continue;
+            for (int[] nxt : Rules.getNextMove(piece, board))
                 moves.add(new AlphaBetaNode(piece.key, piece.position, nxt));
         }
         return moves;

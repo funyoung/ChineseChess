@@ -224,38 +224,9 @@ public class GamePresenter extends GameController {
         return false;
     }
 
-    public void movePieceFromModel(String pieceKey, int[] to) {
-        selectingPiece.clear();
-
-        //invalidate();
-        if (!hasWin()) {
-            showWinner('r');
-        } else if (!isPlayer()) {
-            /** UI */
-            //responseMoveChess(board,this);
-        }
-    }
-
     @Override
     public void movePieceFromAI(String pieceKey, int[] to) {
         selectingPiece.clear();
-
-        //invalidate();
-        if (!hasWin()) {
-            showWinner('b');
-        } else if (!isPlayer()) {
-            /** UI */
-            //responseMoveChess(board,this);
-        }
-
-    }
-
-    /**
-     * 显示游戏结果
-     */
-    public void showWinner(char player) {
-        //((MainActivity)context).finish();
-        //System.exit(0);
     }
 
     /**
@@ -263,19 +234,19 @@ public class GamePresenter extends GameController {
      * 2. 当前点击的棋子分是本方棋子和对方棋子，最后本次选择棋子有3种可能结果
      * A. 无效选择 B. 本次点击新选中本方棋子 C. 上次选择的棋子吃掉本次点中的对方棋子
      */
-    public void pieceClickMove(Piece key) {
-        boolean isPlayer = isPlayer(key.key);
+    public void pieceClickMove(Piece piece) {
+        boolean isPlayer = piece.isRed();
         if (selectingPiece.hasSelection() && !isPlayer) { //棋子吃棋子
-            int[] pos = getPiece(key.key).position;
+            int[] pos = getPiece(piece.key).position;
 
             /* If an enemy piece already has been selected.*/
             if (selectingPiece.hasMovingTarget(pos)) {
-                bitmapMap.remove(key);
+                bitmapMap.remove(piece);
                 moveChess(selectingPiece.getKey(), pos);
-                movePieceFromModel(selectingPiece.getKey(), pos);
+                selectingPiece.clear();
             }
         } else if (isPlayer) {
-            select(selectingPiece, key);
+            select(selectingPiece, piece);
             /* Select the piece.*/
             // todo: only invalidate the selected area
             invalidate();
@@ -291,16 +262,8 @@ public class GamePresenter extends GameController {
             int[] pos = viewToModelConverter(sPos);
             if (selectingPiece.hasMovingTarget(pos)) {
                 moveChess(selectingPiece.getKey(), pos);
-                movePieceFromModel(selectingPiece.getKey(), pos);
+                selectingPiece.clear();
             }
-//            int[] selectedPiecePos = board.pieces.get(selectingPiece.getKey()).position;
-//            for (int[] each : Rules.getNextMove(selectingPiece.getKey(), selectedPiecePos, board)) {
-//                if (Arrays.equals(each, pos)) {/**当前位置是否可达*/
-//                    moveChess(selectingPiece.getKey(), pos, board);
-//                    movePieceFromModel(selectingPiece.getKey(), pos);
-//                    break;
-//                }
-//            }
         }
     }
 

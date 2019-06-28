@@ -28,16 +28,6 @@ public class Board {
         }
     }
 
-    public static char hasWin(Board board) {
-        /**
-         * Judge has the game ended.
-         * @return 'r' for RED wins, 'b' for BLACK wins, 'x' for game continues.
-         * */
-        if (board.isRedWin()) return 'r';
-        else if (board.isBlackWin()) return 'b';
-        else return 'x';
-    }
-
     private boolean isBlackWin() {
         return pieces.get("rb0") == null;
     }
@@ -82,7 +72,6 @@ public class Board {
     }
 
     public Piece updatePiece(String key, int[] newPos) {
-
         Piece orig = pieces.get(key);
         Piece inNewPos = getPiece(newPos);
 
@@ -96,7 +85,6 @@ public class Board {
         cells[newPos[0]][newPos[1]] = orig;
         orig.position = newPos;
         isPlayer = !isPlayer;
-        //player = player == 'r' ? 'b' : 'r';/**玩家交替*/
         return inNewPos;
     }
 
@@ -130,11 +118,11 @@ public class Board {
         return isPlayer;
     }
 
-    public boolean checkPlayer(String key) {
-        return key.startsWith("r");
-    }
-
     public int[] getReversePosition(Piece piece) {
         return new int[] { BOARD_ROW_COUNT - 1 - piece.position[0], piece.position[1] };
+    }
+
+    public boolean isDead() {
+        return isRedWin() || isBlackWin();
     }
 }

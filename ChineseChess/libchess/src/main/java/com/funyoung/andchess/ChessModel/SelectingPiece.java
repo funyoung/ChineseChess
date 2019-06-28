@@ -29,8 +29,8 @@ public class SelectingPiece {
         if (null == key) {
             nextMoveList = Collections.emptyList();
         } else {
-            int[] selectedPiecePos = board.get(key.key).position;
-            nextMoveList = Rules.getNextMove(key.key, selectedPiecePos, board);
+            Piece piece = board.get(key.key);
+            nextMoveList = Rules.getNextMove(piece, board);
         }
     }
 

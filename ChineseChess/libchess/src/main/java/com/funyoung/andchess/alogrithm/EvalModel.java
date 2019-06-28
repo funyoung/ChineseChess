@@ -22,22 +22,21 @@ public class EvalModel {
         for (Piece piece : board.values()) {
             /* The table in PiecePosition is for red player in default. To eval black player, needs to perform a mirror transformation. */
             int[] reversePosition = board.getReversePosition(piece);
-//            int[] reversePosition = {board.BOARD_ROW_COUNT - 1 - piece.position[0], piece.position[1]};
-            switch (piece.character) {
+            switch (piece.getCharacter()) {
                 case 'b':
-                    if (piece.color == 'r') values[0][0] += evalPieceValue(0);
+                    if (piece.isRed()) values[0][0] += evalPieceValue(0);
                     else values[1][0] += evalPieceValue(0);
                     break;
                 case 's':
-                    if (piece.color == 'r') values[0][0] += evalPieceValue(1);
+                    if (piece.isRed()) values[0][0] += evalPieceValue(1);
                     else values[1][0] += evalPieceValue(1);
                     break;
                 case 'x':
-                    if (piece.color == 'r') values[0][0] += evalPieceValue(2);
+                    if (piece.isRed()) values[0][0] += evalPieceValue(2);
                     else values[1][0] += evalPieceValue(2);
                     break;
                 case 'm':
-                    if (piece.color == 'r') {
+                    if (piece.isRed()) {
                         values[0][0] += evalPieceValue(3);
                         values[0][1] += evalPiecePosition(3, piece.position);
                     } else {
@@ -46,7 +45,7 @@ public class EvalModel {
                     }
                     break;
                 case 'j':
-                    if (piece.color == 'r') {
+                    if (piece.isRed()) {
                         values[0][0] += evalPieceValue(4);
                         values[0][1] += evalPiecePosition(4, piece.position);
                     } else {
@@ -55,7 +54,7 @@ public class EvalModel {
                     }
                     break;
                 case 'p':
-                    if (piece.color == 'r') {
+                    if (piece.isRed()) {
                         values[0][0] += evalPieceValue(5);
                         values[0][1] += evalPiecePosition(5, piece.position);
                     } else {
@@ -64,7 +63,7 @@ public class EvalModel {
                     }
                     break;
                 case 'z':
-                    if (piece.color == 'r') {
+                    if (piece.isRed()) {
                         values[0][0] += evalPieceValue(6);
                         values[0][1] += evalPiecePosition(6, piece.position);
                     } else {

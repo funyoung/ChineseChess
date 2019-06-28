@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
                     controller.postInvalidate();
                     break;
                 case SHOW_WIN:
-                    showWin(msg.getData().getChar("win"));
+                    showWin(msg.getData().getBoolean("win"));
                     break;
             }
             super.handleMessage(msg);
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             super.run();
 
-            while (controller.hasWin()) {
+            while (!controller.isDead()) {
                 updateView();
 
                 /* User in. */
@@ -84,11 +84,12 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                if (!controller.hasWin()) {
-                    showWin('r');
+                // todo: 合并同一判断条件内的两个语句
+                if (controller.isDead()) {
+                    showWin(true);
                 }
 
-                if (!controller.hasWin()) {
+                if (controller.isDead()) {
                     interrupt();//中断线程
                 }
 
@@ -107,13 +108,13 @@ public class MainActivity extends AppCompatActivity {
             }
 
             /**黑棋赢*/
-            showWin('b');
+            showWin(false);
         }
 
-        private void showWin(char player) {
+        private void showWin(boolean player) {
             Message msg = new Message();
             Bundle bundle = new Bundle();
-            bundle.putChar("win", player);
+            bundle.putBoolean("win", player);
             msg.what = SHOW_WIN;
             msg.setData(bundle);
             myHandler.sendMessage(msg);
@@ -127,9 +128,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void showWin(char r) {
+    public void showWin(boolean player) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(r + "is Winner");
+        builder.setMessage(player ? "You Win" : "You Lose");
         builder.setTitle("提示");
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override

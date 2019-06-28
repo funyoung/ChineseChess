@@ -1,33 +1,29 @@
 package com.funyoung.andchess.ChessModel;
 
 /**
- * Created by Tang on 2017/2/21.
  */
-
 public class Piece {
+    public final String key;
+    private final boolean red;
+    private final char character;
+    public int[] position;
 
-    public String key;
-    /**
-     * 棋子key
-     */
-    public char color;
-    /**
-     * 颜色
-     */
-    public char character;
-    /**
-     * 标识
-     */
-    public int[] position = new int[2];
+    public Piece(boolean red, char character, int index, int row, int col) {
+        this.key = (red ? "r" : "b") + character + index;
+        this.red = red;
+        this.character = character;
+        this.position = new int[] { row, col };
+    }
 
-    /**
-     * 坐标
-     */
+    public boolean isRed() {
+        return red;
+    }
 
-    public Piece(String name, int[] position) {
-        this.key = name;
-        this.color = name.charAt(0);
-        this.character = name.charAt(1);
-        this.position = position;
+    public boolean isColor(boolean player) {
+        return red == player;
+    }
+
+    public char getCharacter() {
+        return character;
     }
 }
