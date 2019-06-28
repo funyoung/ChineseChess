@@ -16,18 +16,18 @@ import java.util.Set;
  * Created by Tang on 2017/2/22.
  */
 
-public class GameController {
+abstract public class GameController {
     private final Board board;
     private final IGameView gameView;
 
     public GameController(IGameView gameView) {
         this.gameView = gameView;
-        board = playChess();
+        board = new Board(initPieces());
     }
 
     /**初始化棋子图片和位置*/
     private Map<String, Piece> initPieces() {
-        Map<String, Piece> pieces = new HashMap<String, Piece>();
+        Map<String, Piece> pieces = new HashMap<>();
         pieces.put("bj0", new Piece("bj0", new int[]{0, 0}));
         pieces.put("bm0", new Piece("bm0", new int[]{0, 1}));
         pieces.put("bx0", new Piece("bx0", new int[]{0, 2}));
@@ -64,23 +64,6 @@ public class GameController {
         return pieces;
     }
 
-    /**初始化棋盘*/
-    private Board initBoard() {
-        Board board = new Board();
-        board.pieces = initPieces();
-        for (Piece piece : board.pieces.values())
-            board.update(piece);
-        return board;
-    }
-    /**开始游戏*/
-    public Board playChess() {
-        /**
-         * Start game.
-         * */
-        initPieces();
-        return initBoard();
-    }
-
     public void moveChess(String key, int[] position) {
         /**
          * Implements user's action.
@@ -106,40 +89,33 @@ public class GameController {
         return Board.hasWin(board) == 'x';
     }
 
-    public boolean isUserIn() {
-        return board.player == 'r';
-    }
-
     protected void invalidate() {
         gameView.postInvalidate();
     }
 
     protected Set<String> getKeySet() {
-        return board.pieces.keySet();
+        return board.keySet();
     }
 
     protected Collection<Piece> getPieces() {
-        return board.pieces.values();
+        return board.values();
     }
 
-    protected boolean isPlayer() {
-        return board.player == 'r';
+    public boolean isPlayer() {
+        return board.isPlayer();
     }
 
     protected boolean isPlayer(String key) {
-        return key.charAt(0) == board.player;
+        return board.checkPlayer(key);
     }
 
     protected Piece getPiece(String key) {
-        return board.pieces.get(key);
+        return board.get(key);
     }
 
     protected void select(SelectingPiece selectingPiece, Piece key) {
         selectingPiece.select(key, board);
     }
 
-    // todo: merge with GamePresenter.movePieceFromAI or make it abstract
-    public void movePieceFromAI(String pieceKey, int[] to) {
-
-    }
+    abstract public void movePieceFromAI(String pieceKey, int[] to);
 }

@@ -29,7 +29,7 @@ public class SelectingPiece {
         if (null == key) {
             nextMoveList = Collections.emptyList();
         } else {
-            int[] selectedPiecePos = board.pieces.get(key.key).position;
+            int[] selectedPiecePos = board.get(key.key).position;
             nextMoveList = Rules.getNextMove(key.key, selectedPiecePos, board);
         }
     }

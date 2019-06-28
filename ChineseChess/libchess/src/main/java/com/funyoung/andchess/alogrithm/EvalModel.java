@@ -19,10 +19,10 @@ public class EvalModel {
      * @param player, eval the situation in player's perspective.
      */
     public int eval(Board board, char player) {
-        for (Map.Entry<String, Piece> stringPieceEntry : board.pieces.entrySet()) {
-            Piece piece = stringPieceEntry.getValue();
+        for (Piece piece : board.values()) {
             /* The table in PiecePosition is for red player in default. To eval black player, needs to perform a mirror transformation. */
-            int[] reversePosition = {board.BOARD_HEIGHT - 1 - piece.position[0], piece.position[1]};
+            int[] reversePosition = board.getReversePosition(piece);
+//            int[] reversePosition = {board.BOARD_ROW_COUNT - 1 - piece.position[0], piece.position[1]};
             switch (piece.character) {
                 case 'b':
                     if (piece.color == 'r') values[0][0] += evalPieceValue(0);

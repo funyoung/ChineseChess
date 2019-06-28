@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 updateView();
 
                 /* User in. */
-                while (controller.isUserIn()) {
+                while (controller.isPlayer()) {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {

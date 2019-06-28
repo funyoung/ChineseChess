@@ -16,14 +16,8 @@ public class SearchModel {
 
     public AlphaBetaNode search(Board board) {
         this.board = board;
-        if (board.pieces.size() < 28)
-            DEPTH = 3;
-        if (board.pieces.size() < 16)
-            DEPTH = 4;
-        if (board.pieces.size() < 6)
-            DEPTH = 5;
-        if (board.pieces.size() < 4)
-            DEPTH = 6;
+        setDepth(board.size());
+
         long startTime = System.currentTimeMillis();
         AlphaBetaNode best = null;
         ArrayList<AlphaBetaNode> moves = generateMovesForAll(true);
@@ -37,7 +31,7 @@ public class SearchModel {
             /* Back move*/
             board.updatePiece(n.piece, n.from);
             if (eaten != null) {
-                board.pieces.put(eaten.key, eaten);
+                board.put(eaten.key, eaten);
                 board.backPiece(eaten.key);
             }
         }
@@ -45,6 +39,18 @@ public class SearchModel {
         System.out.println(finishTime - startTime);
         return best;
     }
+
+    private void setDepth(int size) {
+        if (size < 28)
+            DEPTH = 3;
+        if (size < 16)
+            DEPTH = 4;
+        if (size < 6)
+            DEPTH = 5;
+        if (size < 4)
+            DEPTH = 6;
+    }
+
     private int alphaBeta(int depth, int alpha, int beta, boolean isMax) {
         /* Return evaluation if reaching leaf node or any side won.*/
         if (depth == 0 || Board.hasWin(board) != 'x')
@@ -86,7 +92,7 @@ public class SearchModel {
                 }
                 board.updatePiece(n.piece, n.from);
                 if (eaten != null) {
-                    board.pieces.put(eaten.key, eaten);
+                    board.put(eaten.key, eaten);
                     board.backPiece(eaten.key);
                 }
             /* Cut-off */
@@ -97,8 +103,7 @@ public class SearchModel {
     }
     private ArrayList<AlphaBetaNode> generateMovesForAll(boolean isMax) {
         ArrayList<AlphaBetaNode> moves = new ArrayList<AlphaBetaNode>();
-        for (Map.Entry<String, Piece> stringPieceEntry : board.pieces.entrySet()) {
-            Piece piece = stringPieceEntry.getValue();
+        for (Piece piece : board.values()) {
             if (isMax && piece.color == 'r') continue;
             if (!isMax && piece.color == 'b') continue;
             for (int[] nxt : Rules.getNextMove(piece.key, piece.position, board))

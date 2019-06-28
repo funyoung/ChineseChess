@@ -1,34 +1,49 @@
 package com.funyoung.andchess.ChessModel;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
- * Created by Tang on 2017/2/21.
+ * The Chinese Chess Board grid consist 10 horizontal and crossed with 9 vertical lines.
+ * So it consists of 90 cell points, which is a crossed point between vertical and horizontal lines.
  */
-
 public class Board {
+    private final static int BOARD_COLUMN_COUNT = 9;
+    private final static int BOARD_ROW_COUNT = 10;
 
-    public final int BOARD_WIDTH = 9, BOARD_HEIGHT = 10;
-    /**
-     * 红色玩家
-     */
-    private final Piece[][] cells = new Piece[BOARD_HEIGHT][BOARD_WIDTH];
-    public Map<String, Piece> pieces;
-    /**
-     * 棋子集合
-     */
-    public char player = 'r';
+    private final Piece[][] cells = new Piece[BOARD_ROW_COUNT][BOARD_COLUMN_COUNT];
+
+    private final Map<String, Piece> pieces = new HashMap<>();
+    private boolean isPlayer = true;
+
+    public Board(Map<String, Piece> initPieces) {
+        pieces.clear();
+        if (null != initPieces) {
+            pieces.putAll(initPieces);
+        }
+        for (Piece piece : pieces.values()) {
+            update(piece);
+        }
+    }
 
     public static char hasWin(Board board) {
         /**
          * Judge has the game ended.
          * @return 'r' for RED wins, 'b' for BLACK wins, 'x' for game continues.
          * */
-        boolean isRedWin = board.pieces.get("bb0") == null;
-        boolean isBlackWin = board.pieces.get("rb0") == null;
-        if (isRedWin) return 'r';
-        else if (isBlackWin) return 'b';
+        if (board.isRedWin()) return 'r';
+        else if (board.isBlackWin()) return 'b';
         else return 'x';
+    }
+
+    private boolean isBlackWin() {
+        return pieces.get("rb0") == null;
+    }
+
+    private boolean isRedWin() {
+        return pieces.get("bb0") == null;
     }
 
     public boolean isInside(int[] position) {
@@ -36,8 +51,8 @@ public class Board {
     }
 
     public boolean isInside(int x, int y) {
-        return !(x < 0 || x >= BOARD_HEIGHT
-                || y < 0 || y >= BOARD_WIDTH);
+        return !(x < 0 || x >= BOARD_ROW_COUNT
+                || y < 0 || y >= BOARD_COLUMN_COUNT);
     }
 
     public boolean isEmpty(int[] position) {
@@ -60,7 +75,7 @@ public class Board {
     /**
      * 位置更新
      */
-    public boolean update(Piece piece) {
+    private boolean update(Piece piece) {
         int[] pos = piece.position;
         cells[pos[0]][pos[1]] = piece;
         return true;
@@ -80,7 +95,8 @@ public class Board {
         cells[origPos[0]][origPos[1]] = null;
         cells[newPos[0]][newPos[1]] = orig;
         orig.position = newPos;
-        player = player == 'r' ? 'b' : 'r';/**玩家交替*/
+        isPlayer = !isPlayer;
+        //player = player == 'r' ? 'b' : 'r';/**玩家交替*/
         return inNewPos;
     }
 
@@ -88,5 +104,37 @@ public class Board {
         int[] origPos = pieces.get(key).position;
         cells[origPos[0]][origPos[1]] = pieces.get(key);
         return true;
+    }
+
+    public Collection<Piece> values() {
+        return pieces.values();
+    }
+
+    public int size() {
+        return pieces.size();
+    }
+
+    public void put(String key, Piece eaten) {
+        pieces.put(key, eaten);
+    }
+
+    public Piece get(String name) {
+        return pieces.get(name);
+    }
+
+    public Set<String> keySet() {
+        return pieces.keySet();
+    }
+
+    public boolean isPlayer() {
+        return isPlayer;
+    }
+
+    public boolean checkPlayer(String key) {
+        return key.startsWith("r");
+    }
+
+    public int[] getReversePosition(Piece piece) {
+        return new int[] { BOARD_ROW_COUNT - 1 - piece.position[0], piece.position[1] };
     }
 }
