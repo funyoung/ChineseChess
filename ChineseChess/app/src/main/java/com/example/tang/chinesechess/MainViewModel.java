@@ -6,9 +6,11 @@ import android.content.res.Resources;
 import android.support.annotation.MainThread;
 import android.support.annotation.WorkerThread;
 
+import com.funyoung.andchess.ChessModel.Manual;
 import com.funyoung.andchess.GamePresenter;
 import com.funyoung.andchess.GameView;
 import com.funyoung.andchess.control.GameController;
+import com.google.gson.Gson;
 
 public class MainViewModel extends ViewModel {
     protected final MutableLiveData<Boolean> winnerLiveData = new MutableLiveData<>();
@@ -18,15 +20,24 @@ public class MainViewModel extends ViewModel {
     @MainThread
     public void start(GameView gameView, Resources resources) {
         controller = new GamePresenter(gameView, resources);
-        GameThread th = new GameThread();
+        GameThread th = new GameThread(resources);
         th.start();
     }
 
 
     private class GameThread extends Thread {
+        private final Resources resources;
+
+        private GameThread(Resources resources) {
+            this.resources = resources;
+        }
+
         @Override
         public void run() {
             super.run();
+            String piecesText = resources.getString(R.string.full_pieces);
+            Manual manual = new Gson().fromJson(piecesText, Manual.class);
+            controller.update(manual);
             while (!controller.isDead()) {
                 checkUserWin();
 

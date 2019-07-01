@@ -17,8 +17,11 @@ public class Board {
 
     private final Map<String, Piece> pieces = new HashMap<>();
     private boolean isPlayer = true;
+    private String manualName;
 
-    public Board(Map<String, Piece> initPieces) {
+    public void update(String name, Map<String, Piece> initPieces) {
+        manualName = name;
+
         pieces.clear();
         if (null != initPieces) {
             pieces.putAll(initPieces);
