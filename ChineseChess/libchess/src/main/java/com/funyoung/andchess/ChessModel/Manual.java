@@ -1,5 +1,7 @@
 package com.funyoung.andchess.ChessModel;
 
+import com.google.gson.annotations.SerializedName;
+
 /*
 {
   "name": "default",
@@ -12,8 +14,11 @@ package com.funyoung.andchess.ChessModel;
 }
  */
 public class Manual {
+    @SerializedName(value="name", alternate={"名字"})
     private String name;
+    @SerializedName(value="r", alternate={"红", "红方"})
     private Side r;
+    @SerializedName(value="b", alternate={"黑", "黑方"})
     private Side b;
 
     public String getName() {
@@ -41,12 +46,19 @@ public class Manual {
     }
 
     public static class Side {
+        @SerializedName(value="j", alternate={"ju", "车"})
         private String j;
+        @SerializedName(value="m", alternate={"ma", "马"})
         private String m;
+        @SerializedName(value="x", alternate={"xiang", "相", "象"})
         private String x;
+        @SerializedName(value="s", alternate={"shi", "仕", "士"})
         private String s;
+        @SerializedName(value="b", alternate={"shuai", "jiang", "帅", "将"})
         private String b;
+        @SerializedName(value="p", alternate={"pao", "炮"})
         private String p;
+        @SerializedName(value="z", alternate={"zu", "bing", "兵", "卒"})
         private String z;
 
         public String getJ() {

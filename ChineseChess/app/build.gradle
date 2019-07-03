@@ -34,5 +34,4 @@ dependencies {
     testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     implementation project(path: ':andchess')
     implementation project(path: ':libchess')
-    implementation 'com.google.code.gson:gson:2.8.5'
 }
