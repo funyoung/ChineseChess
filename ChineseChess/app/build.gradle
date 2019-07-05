@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
+    compileSdkVersion rootProject.compileSdkVersion
     defaultConfig {
         applicationId "com.example.tang.chinesechess"
+
         minSdkVersion 22
-        targetSdkVersion 28
+        targetSdkVersion rootProject.targetSdkVersion
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -26,16 +26,18 @@ dependencies {
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'androidx.appcompat:appcompat:1.0.0'
 
+    implementation "androidx.appcompat:appcompat:$rootProject.appCompatVersion"
+
+    testImplementation "junit:junit:$rootProject.junitVersion"
     testImplementation 'junit:junit:4.13-beta-3'
 
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintLayoutVersion"
+    implementation "androidx.lifecycle:lifecycle-extensions:$rootProject.lifeCycleVersion"
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     implementation project(path: ':andchess')
     implementation project(path: ':libchess')
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 }
