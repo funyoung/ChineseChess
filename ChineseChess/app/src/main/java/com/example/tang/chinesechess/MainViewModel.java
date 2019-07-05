@@ -1,10 +1,10 @@
 package com.example.tang.chinesechess;
 
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 import android.content.res.Resources;
-import android.support.annotation.MainThread;
-import android.support.annotation.WorkerThread;
+import androidx.annotation.MainThread;
+import androidx.annotation.WorkerThread;
 
 import com.funyoung.andchess.ChessModel.Manual;
 import com.funyoung.andchess.GamePresenter;
