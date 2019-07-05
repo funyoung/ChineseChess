@@ -44,19 +44,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        GameView gameView = initGameView();
+        //GameView gameView = initGameView();
+        GameView gameView = findViewById(R.id.gameView);
         mainViewModel.start(gameView, getResources());
     }
 
-    private GameView initGameView() {
-        GameView gameView = new GameView(this);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT
-        );
-        this.addContentView(gameView, params);
-        return gameView;
-    }
+//    private GameView initGameView() {
+//        GameView gameView = new GameView(this);
+//        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+//                FrameLayout.LayoutParams.MATCH_PARENT,
+//                FrameLayout.LayoutParams.MATCH_PARENT
+//        );
+//        this.addContentView(gameView, params);
+//        return gameView;
+//    }
 
     public void showWin(boolean win) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
