@@ -45,129 +45,138 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="parent" />
 
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
         android:background="@color/azure"
-        android:text="@string/one"
-        app:layout_constraintEnd_toStartOf="@id/button2"
-        app:layout_constraintStart_toStartOf="@id/dial_pad"
-        app:layout_constraintTop_toTopOf="@id/button2" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:background="@color/azure"
-        android:text="@string/two"
-        app:layout_constraintEnd_toStartOf="@id/button3"
-        app:layout_constraintStart_toEndOf="@id/button1"
-        app:layout_constraintTop_toTopOf="@id/button3" />
-
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:background="@color/azure"
-        android:text="@string/three"
-        app:layout_constraintBottom_toTopOf="@id/button6"
         app:layout_constraintEnd_toEndOf="@id/dial_pad"
-        app:layout_constraintStart_toEndOf="@id/button2"
+        app:layout_constraintStart_toStartOf="@id/dial_pad"
         app:layout_constraintTop_toTopOf="@id/dial_pad" />
 
-    <Button
-        android:id="@+id/button4"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:background="@color/azure"
-        android:text="@string/four"
-        app:layout_constraintEnd_toStartOf="@id/button5"
-        app:layout_constraintStart_toStartOf="@id/dial_pad"
-        app:layout_constraintTop_toTopOf="@id/button5" />
+    <!--<Button-->
+        <!--android:id="@+id/button1"-->
+        <!--android:layout_width="64dp"-->
+        <!--android:layout_height="64dp"-->
+        <!--android:background="@color/azure"-->
+        <!--android:text="@string/one"-->
+        <!--app:layout_constraintEnd_toStartOf="@id/button2"-->
+        <!--app:layout_constraintStart_toStartOf="@id/dial_pad"-->
+        <!--app:layout_constraintTop_toTopOf="@id/button2" />-->
 
-    <Button
-        android:id="@+id/button5"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:background="@color/azure"
-        android:text="@string/five"
-        app:layout_constraintEnd_toStartOf="@id/button6"
-        app:layout_constraintStart_toEndOf="@id/button4"
-        app:layout_constraintTop_toTopOf="@id/button6" />
+    <!--<Button-->
+        <!--android:id="@+id/button2"-->
+        <!--android:layout_width="64dp"-->
+        <!--android:layout_height="64dp"-->
+        <!--android:background="@color/azure"-->
+        <!--android:text="@string/two"-->
+        <!--app:layout_constraintEnd_toStartOf="@id/button3"-->
+        <!--app:layout_constraintStart_toEndOf="@id/button1"-->
+        <!--app:layout_constraintTop_toTopOf="@id/button3" />-->
 
-    <Button
-        android:id="@+id/button6"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:background="@color/azure"
-        android:text="@string/six"
-        app:layout_constraintBottom_toTopOf="@id/button9"
-        app:layout_constraintEnd_toEndOf="@id/dial_pad"
-        app:layout_constraintStart_toEndOf="@id/button5"
-        app:layout_constraintTop_toBottomOf="@id/button3" />
+    <!--<Button-->
+        <!--android:id="@+id/button3"-->
+        <!--android:layout_width="64dp"-->
+        <!--android:layout_height="64dp"-->
+        <!--android:background="@color/azure"-->
+        <!--android:text="@string/three"-->
+        <!--app:layout_constraintBottom_toTopOf="@id/button6"-->
+        <!--app:layout_constraintEnd_toEndOf="@id/dial_pad"-->
+        <!--app:layout_constraintStart_toEndOf="@id/button2"-->
+        <!--app:layout_constraintTop_toTopOf="@id/dial_pad" />-->
 
-    <Button
-        android:id="@+id/button7"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:background="@color/azure"
-        android:text="@string/seven"
-        app:layout_constraintEnd_toStartOf="@id/button8"
-        app:layout_constraintStart_toStartOf="@id/dial_pad"
-        app:layout_constraintTop_toTopOf="@id/button8" />
+    <!--<Button-->
+        <!--android:id="@+id/button4"-->
+        <!--android:layout_width="64dp"-->
+        <!--android:layout_height="64dp"-->
+        <!--android:background="@color/azure"-->
+        <!--android:text="@string/four"-->
+        <!--app:layout_constraintEnd_toStartOf="@id/button5"-->
+        <!--app:layout_constraintStart_toStartOf="@id/dial_pad"-->
+        <!--app:layout_constraintTop_toTopOf="@id/button5" />-->
 
-    <Button
-        android:id="@+id/button8"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:background="@color/azure"
-        android:text="@string/eight"
-        app:layout_constraintEnd_toStartOf="@id/button9"
-        app:layout_constraintStart_toEndOf="@id/button7"
-        app:layout_constraintTop_toTopOf="@id/button9" />
+    <!--<Button-->
+        <!--android:id="@+id/button5"-->
+        <!--android:layout_width="64dp"-->
+        <!--android:layout_height="64dp"-->
+        <!--android:background="@color/azure"-->
+        <!--android:text="@string/five"-->
+        <!--app:layout_constraintEnd_toStartOf="@id/button6"-->
+        <!--app:layout_constraintStart_toEndOf="@id/button4"-->
+        <!--app:layout_constraintTop_toTopOf="@id/button6" />-->
 
-    <Button
-        android:id="@+id/button9"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:background="@color/azure"
-        android:text="@string/nine"
-        app:layout_constraintBottom_toTopOf="@id/button12"
-        app:layout_constraintEnd_toEndOf="@id/dial_pad"
-        app:layout_constraintStart_toEndOf="@id/button8"
-        app:layout_constraintTop_toBottomOf="@id/button6" />
+    <!--<Button-->
+        <!--android:id="@+id/button6"-->
+        <!--android:layout_width="64dp"-->
+        <!--android:layout_height="64dp"-->
+        <!--android:background="@color/azure"-->
+        <!--android:text="@string/six"-->
+        <!--app:layout_constraintBottom_toTopOf="@id/button9"-->
+        <!--app:layout_constraintEnd_toEndOf="@id/dial_pad"-->
+        <!--app:layout_constraintStart_toEndOf="@id/button5"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/button3" />-->
 
-    <Button
-        android:id="@+id/button10"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:background="@color/azure"
-        android:text="@string/asterisk"
-        app:layout_constraintEnd_toStartOf="@id/button11"
-        app:layout_constraintStart_toStartOf="@id/dial_pad"
-        app:layout_constraintTop_toTopOf="@id/button11" />
+    <!--<Button-->
+        <!--android:id="@+id/button7"-->
+        <!--android:layout_width="64dp"-->
+        <!--android:layout_height="64dp"-->
+        <!--android:background="@color/azure"-->
+        <!--android:text="@string/seven"-->
+        <!--app:layout_constraintEnd_toStartOf="@id/button8"-->
+        <!--app:layout_constraintStart_toStartOf="@id/dial_pad"-->
+        <!--app:layout_constraintTop_toTopOf="@id/button8" />-->
 
-    <Button
-        android:id="@+id/button11"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:background="@color/azure"
-        android:text="@string/zero"
-        app:layout_constraintEnd_toStartOf="@id/button12"
-        app:layout_constraintStart_toEndOf="@id/button10"
-        app:layout_constraintTop_toTopOf="@id/button12" />
+    <!--<Button-->
+        <!--android:id="@+id/button8"-->
+        <!--android:layout_width="64dp"-->
+        <!--android:layout_height="64dp"-->
+        <!--android:background="@color/azure"-->
+        <!--android:text="@string/eight"-->
+        <!--app:layout_constraintEnd_toStartOf="@id/button9"-->
+        <!--app:layout_constraintStart_toEndOf="@id/button7"-->
+        <!--app:layout_constraintTop_toTopOf="@id/button9" />-->
 
-    <Button
-        android:id="@+id/button12"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:background="@color/azure"
-        android:text="@string/sharp"
-        app:layout_constraintBottom_toBottomOf="@id/dial_pad"
-        app:layout_constraintEnd_toEndOf="@id/dial_pad"
-        app:layout_constraintStart_toEndOf="@id/button11"
-        app:layout_constraintTop_toBottomOf="@id/button9" />
+    <!--<Button-->
+        <!--android:id="@+id/button9"-->
+        <!--android:layout_width="64dp"-->
+        <!--android:layout_height="64dp"-->
+        <!--android:background="@color/azure"-->
+        <!--android:text="@string/nine"-->
+        <!--app:layout_constraintBottom_toTopOf="@id/button12"-->
+        <!--app:layout_constraintEnd_toEndOf="@id/dial_pad"-->
+        <!--app:layout_constraintStart_toEndOf="@id/button8"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/button6" />-->
+
+    <!--<Button-->
+        <!--android:id="@+id/button10"-->
+        <!--android:layout_width="64dp"-->
+        <!--android:layout_height="64dp"-->
+        <!--android:background="@color/azure"-->
+        <!--android:text="@string/asterisk"-->
+        <!--app:layout_constraintEnd_toStartOf="@id/button11"-->
+        <!--app:layout_constraintStart_toStartOf="@id/dial_pad"-->
+        <!--app:layout_constraintTop_toTopOf="@id/button11" />-->
+
+    <!--<Button-->
+        <!--android:id="@+id/button11"-->
+        <!--android:layout_width="64dp"-->
+        <!--android:layout_height="64dp"-->
+        <!--android:background="@color/azure"-->
+        <!--android:text="@string/zero"-->
+        <!--app:layout_constraintEnd_toStartOf="@id/button12"-->
+        <!--app:layout_constraintStart_toEndOf="@id/button10"-->
+        <!--app:layout_constraintTop_toTopOf="@id/button12" />-->
+
+    <!--<Button-->
+        <!--android:id="@+id/button12"-->
+        <!--android:layout_width="64dp"-->
+        <!--android:layout_height="64dp"-->
+        <!--android:background="@color/azure"-->
+        <!--android:text="@string/sharp"-->
+        <!--app:layout_constraintBottom_toBottomOf="@id/dial_pad"-->
+        <!--app:layout_constraintEnd_toEndOf="@id/dial_pad"-->
+        <!--app:layout_constraintStart_toEndOf="@id/button11"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/button9" />-->
 
     <View
         android:id="@+id/people_pad"
