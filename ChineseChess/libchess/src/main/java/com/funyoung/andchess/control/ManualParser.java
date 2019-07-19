@@ -8,7 +8,7 @@ import java.util.Map;
 
 class ManualParser {
     public static Map<String, Piece> parse(Manual manual) throws Exception {
-        Map<String, Piece> pieces = new HashMap<>();
+        Map<String, Piece> pieces = new HashMap<>(32);
         addBlackPieces(pieces, manual.getB());
         addRedPieces(pieces, manual.getR());
         return pieces;

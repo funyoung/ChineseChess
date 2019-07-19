@@ -6,15 +6,12 @@ import android.content.Context;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
-/**
- * Created by Tang on 2017/2/25.
- */
-
-/** LeakCanary检测内存溢出*/
-public class ExampleApplication extends Application {
+/** LeakCanary检测内存溢出
+ * @author yangfeng*/
+public class ChessApplication extends Application {
 
     public static RefWatcher getRefWatcher(Context context) {
-        ExampleApplication application = (ExampleApplication) context.getApplicationContext();
+        ChessApplication application = (ChessApplication) context.getApplicationContext();
         return application.refWatcher;
     }
 

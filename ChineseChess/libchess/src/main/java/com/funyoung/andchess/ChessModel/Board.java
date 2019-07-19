@@ -79,8 +79,9 @@ public class Board {
         Piece inNewPos = getPiece(newPos);
 
         /* 如果移动的位置存在棋子则移除该棋子*/
-        if (inNewPos != null)
+        if (inNewPos != null) {
             pieces.remove(inNewPos.key);
+        }
 
         /* 清除并更新*/
         int[] origPos = orig.position;

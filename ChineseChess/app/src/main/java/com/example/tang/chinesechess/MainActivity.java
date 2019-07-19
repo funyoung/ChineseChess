@@ -3,15 +3,22 @@ package com.example.tang.chinesechess;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.os.Bundle;
 import androidx.annotation.MainThread;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.funyoung.andchess.ChessModel.Manual;
+import com.funyoung.andchess.GamePresenter;
 import com.funyoung.andchess.GameView;
 import com.funyoung.andchess.control.GameController;
+import com.google.gson.Gson;
 
+/**
+ * @author yangfeng
+ */
 public class MainActivity extends AppCompatActivity {
     private MainViewModel mainViewModel;
 
@@ -25,7 +32,16 @@ public class MainActivity extends AppCompatActivity {
 
     @MainThread
     private void init() {
-        mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        Resources resources = getResources();
+        GameView gameView = findViewById(R.id.gameView);
+
+        String piecesText = resources.getString(R.string.full_pieces);
+        Manual manual = new Gson().fromJson(piecesText, Manual.class);
+        GameController controller = new GamePresenter(gameView, resources);
+        MainViewModelFactory factory = new MainViewModelFactory(controller, manual);
+
+        mainViewModel = ViewModelProviders.of(this, factory).get(MainViewModel.class);
+        //mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
 
         mainViewModel.winnerLiveData.observe(this, new Observer<Boolean>() {
             @Override
@@ -42,21 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-        //GameView gameView = initGameView();
-        GameView gameView = findViewById(R.id.gameView);
-        mainViewModel.start(gameView, getResources());
     }
-
-//    private GameView initGameView() {
-//        GameView gameView = new GameView(this);
-//        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-//                FrameLayout.LayoutParams.MATCH_PARENT,
-//                FrameLayout.LayoutParams.MATCH_PARENT
-//        );
-//        this.addContentView(gameView, params);
-//        return gameView;
-//    }
 
     public void showWin(boolean win) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

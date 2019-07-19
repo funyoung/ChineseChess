@@ -9,14 +9,11 @@ import com.funyoung.andchess.alogrithm.SearchModel;
 import com.funyoung.andchess.view.IGameView;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by Tang on 2017/2/22.
+ * @author yangfeng
  */
-
 abstract public class GameController {
     private final Board board;
     private final IGameView gameView;
@@ -33,10 +30,10 @@ abstract public class GameController {
         board.updatePiece(key, position);
     }
 
+    /**
+     * Implements artificial intelligence.
+     * */
     public void responseMoveChess() {
-        /**
-         * Implements artificial intelligence.
-         * */
         SearchModel searchModel = new SearchModel();
         AlphaBetaNode result = searchModel.search(board);
         board.updatePiece(result.piece, result.to);

@@ -1,69 +1,43 @@
 package com.example.tang.chinesechess;
 
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
-import android.content.res.Resources;
 import androidx.annotation.MainThread;
 import androidx.annotation.WorkerThread;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.funyoung.andchess.ChessModel.Manual;
-import com.funyoung.andchess.GamePresenter;
-import com.funyoung.andchess.GameView;
 import com.funyoung.andchess.control.GameController;
-import com.google.gson.Gson;
 
+/**
+ * @author yangfeng
+ */
 public class MainViewModel extends ViewModel {
     protected final MutableLiveData<Boolean> winnerLiveData = new MutableLiveData<>();
     protected final MutableLiveData<GameController> updateLiveData = new MutableLiveData<>();
 
-    private GamePresenter controller;
+    private final GameController controller;
+    private final Manual manual;
+
     @MainThread
-    public void start(GameView gameView, Resources resources) {
-        controller = new GamePresenter(gameView, resources);
-        GameThread th = new GameThread(resources);
-        th.start();
-    }
+    public MainViewModel(GameController controller, Manual manual) {
+        this.controller = controller;
+        this.manual = manual;
 
-
-    private class GameThread extends Thread {
-        private final Resources resources;
-
-        private GameThread(Resources resources) {
-            this.resources = resources;
-        }
-
-        @Override
-        public void run() {
-            super.run();
-            String piecesText = resources.getString(R.string.full_pieces);
-            Manual manual = new Gson().fromJson(piecesText, Manual.class);
-            controller.update(manual);
-            while (!controller.isDead()) {
-                checkUserWin();
-
-                if (controller.isDead()) {
-                    interrupt();//中断线程
-                }
-
-                runOppositeMove();
-            }
-            showOppositeWin();
-        }
+        new ChessLoopThread().start();
     }
 
     @WorkerThread
+    /** 界面更新缓冲*/
     private void updateAndWait(int mills) {
         updateView();
-        /* 界面更新缓冲*/
         waitFor(mills);
-
     }
 
     @WorkerThread
     private void checkUserWin() {
         updateView();
 
-        /* User in. */
+        /** User in.*/
         while (controller.isPlayer()) {
             waitFor(1000);
         }
@@ -83,7 +57,6 @@ public class MainViewModel extends ViewModel {
         updateAndWait(500);
     }
 
-
     @WorkerThread
     private void waitFor(int mills) {
         try {
@@ -93,8 +66,9 @@ public class MainViewModel extends ViewModel {
         }
     }
 
+    @WorkerThread
+    /**黑棋赢*/
     private void showOppositeWin() {
-        /**黑棋赢*/
         winnerLiveData.postValue(false);
     }
 
@@ -103,4 +77,21 @@ public class MainViewModel extends ViewModel {
         updateLiveData.postValue(controller);
     }
 
+    class ChessLoopThread extends Thread {
+        @Override
+        public void run() {
+            super.run();
+            controller.update(manual);
+            while (!controller.isDead()) {
+                checkUserWin();
+
+                if (controller.isDead()) {
+                    interrupt();//中断线程
+                }
+
+                runOppositeMove();
+            }
+            showOppositeWin();
+        }
+    }
 }

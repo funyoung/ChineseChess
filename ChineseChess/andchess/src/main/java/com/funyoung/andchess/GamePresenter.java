@@ -11,6 +11,9 @@ import com.funyoung.andchess.control.GameController;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author yangfeng
+ */
 public class GamePresenter extends GameController {
     private final Map<String, Drawable> bitmapMap = new HashMap<>();
     private final SelectingPiece selectingPiece = new SelectingPiece();
@@ -236,7 +239,8 @@ public class GamePresenter extends GameController {
      */
     public void pieceClickMove(Piece piece) {
         boolean isPlayer = piece.isRed();
-        if (selectingPiece.hasSelection() && !isPlayer) { //棋子吃棋子
+        //棋子吃棋子
+        if (selectingPiece.hasSelection() && !isPlayer) {
             int[] pos = getPiece(piece.key).position;
 
             /* If an enemy piece already has been selected.*/
