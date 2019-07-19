@@ -6,14 +6,10 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.funyoung.andchess.view.IGameView;
+import com.funyoung.andchess.control.GameController;
 
-/**
- * Created by Tang on 2017/2/23.
- */
-
-public class GameView extends View implements IGameView, View.OnTouchListener {
-    private GamePresenter controller;
+public class GameView extends View implements View.OnTouchListener {
+    private GameController controller;
 
     public GameView(Context context) {
         this(context, null);
@@ -23,7 +19,7 @@ public class GameView extends View implements IGameView, View.OnTouchListener {
         super(context, attrs);
     }
 
-    public void setup(GamePresenter gameController) {
+    public void setup(GameController gameController) {
         this.controller = gameController;
     }
 
@@ -35,9 +31,7 @@ public class GameView extends View implements IGameView, View.OnTouchListener {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        controller.init();
-        controller.updateSize(getWidth(), getHeight());
-        controller.onDraw(canvas);
+        controller.onDraw(canvas, getWidth(), getHeight());
     }
 
     @Override

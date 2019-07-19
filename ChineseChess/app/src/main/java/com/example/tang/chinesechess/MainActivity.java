@@ -1,25 +1,25 @@
 package com.example.tang.chinesechess;
 
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.os.Bundle;
+
 import androidx.annotation.MainThread;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 
-import com.funyoung.andchess.ChessModel.Manual;
 import com.funyoung.andchess.GamePresenter;
 import com.funyoung.andchess.GameView;
 import com.funyoung.andchess.control.GameController;
-import com.google.gson.Gson;
+import com.funyoung.andchess.view.IGameView;
+
+import java.util.List;
 
 /**
  * @author yangfeng
  */
 public class MainActivity extends AppCompatActivity {
+    private GameView gameView;
+    private IGameView view;
     private MainViewModel mainViewModel;
 
     @Override
@@ -27,37 +27,53 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        gameView = findViewById(R.id.gameView);
+
+        view = new IGameView() {
+            @Override
+            public void postInvalidate() {
+                if (null != gameView) {
+                    gameView.postInvalidate();
+                }
+            }
+
+            @Override
+            public void setup(GameController controller) {
+                if (null != gameView) {
+                    gameView.setup(controller);
+                }
+            }
+        };
+
         init();
     }
 
     @MainThread
     private void init() {
-        Resources resources = getResources();
-        GameView gameView = findViewById(R.id.gameView);
-
-        String piecesText = resources.getString(R.string.full_pieces);
-        Manual manual = new Gson().fromJson(piecesText, Manual.class);
-        GameController controller = new GamePresenter(gameView, resources);
-        MainViewModelFactory factory = new MainViewModelFactory(controller, manual);
+        GamePresenter controller = new GamePresenter(view, getResources());
+        MainViewModelFactory factory = new MainViewModelFactory(controller);
 
         mainViewModel = ViewModelProviders.of(this, factory).get(MainViewModel.class);
-        //mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
 
-        mainViewModel.winnerLiveData.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean aBoolean) {
-                showWin(null != aBoolean && aBoolean);
+        mainViewModel.winnerLiveData.observe(this, aBoolean -> showWin(null != aBoolean && aBoolean));
+
+        mainViewModel.updateLiveData.observe(this, gameController -> {
+            if (null != gameController) {
+                gameController.postInvalidate();
             }
         });
 
-        mainViewModel.updateLiveData.observe(this, new Observer<GameController>() {
-            @Override
-            public void onChanged(@Nullable GameController gameController) {
-                if (null != gameController) {
-                    gameController.postInvalidate();
-                }
-            }
+        mainViewModel.loadNameLiveData.observe(this, nameList -> {
+            onNameListLoaded(nameList);
         });
+    }
+
+    private void onNameListLoaded(List<String> nameList) {
+        String name = null;
+        if (null != nameList && !nameList.isEmpty()) {
+            name = nameList.get(0);
+        }
+        mainViewModel.startManual(name);
     }
 
     public void showWin(boolean win) {
@@ -65,12 +81,7 @@ public class MainActivity extends AppCompatActivity {
         // todo: add prompt text into resource xml.
         builder.setMessage(win ? "You Win" : "You Lose");
         builder.setTitle("提示");
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        }).create().show();
+        builder.setPositiveButton("确定", (dialog, which) -> finish()).create().show();
     }
 }
 

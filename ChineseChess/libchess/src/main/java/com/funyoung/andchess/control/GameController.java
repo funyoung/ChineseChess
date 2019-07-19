@@ -81,4 +81,7 @@ abstract public class GameController {
             board.update("DEFAULT", DefaultManual.initPieces());
         }
     }
+
+    public abstract void touchDown(float x, float y);
+    public abstract void onDraw(Object canvas, int width, int height);
 }

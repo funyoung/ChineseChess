@@ -5,8 +5,10 @@ import androidx.annotation.WorkerThread;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.funyoung.andchess.ChessModel.Manual;
+import com.funyoung.andchess.GamePresenter;
 import com.funyoung.andchess.control.GameController;
+
+import java.util.List;
 
 /**
  * @author yangfeng
@@ -14,16 +16,22 @@ import com.funyoung.andchess.control.GameController;
 public class MainViewModel extends ViewModel {
     protected final MutableLiveData<Boolean> winnerLiveData = new MutableLiveData<>();
     protected final MutableLiveData<GameController> updateLiveData = new MutableLiveData<>();
+    protected final MutableLiveData<List<String>> loadNameLiveData = new MutableLiveData<>();
 
-    private final GameController controller;
-    private final Manual manual;
+    private final GamePresenter controller;
+    private ChessLoopThread currentThread;
 
     @MainThread
-    public MainViewModel(GameController controller, Manual manual) {
+    public MainViewModel(GamePresenter controller) {
         this.controller = controller;
-        this.manual = manual;
 
-        new ChessLoopThread().start();
+        new Thread("MainViewModel_loader") {
+            @Override
+            public void run() {
+                List<String> nameList = controller.loadAllManual();
+                loadNameLiveData.postValue(nameList);
+            }
+        }.start();
     }
 
     @WorkerThread
@@ -77,11 +85,28 @@ public class MainViewModel extends ViewModel {
         updateLiveData.postValue(controller);
     }
 
+    @MainThread
+    public void startManual(String name) {
+        if (null != currentThread) {
+            currentThread.interrupt();
+            currentThread = null;
+        }
+
+        currentThread = new ChessLoopThread(name);
+        currentThread.start();
+    }
+
     class ChessLoopThread extends Thread {
+        private final String name;
+
+        ChessLoopThread(String name) {
+            this.name = name;
+        }
+
         @Override
         public void run() {
             super.run();
-            controller.update(manual);
+            controller.loadManual(name);
             while (!controller.isDead()) {
                 checkUserWin();
 

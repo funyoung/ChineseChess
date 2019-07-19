@@ -3,18 +3,35 @@ package com.funyoung.andchess;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
+import androidx.annotation.WorkerThread;
+
+import com.funyoung.andchess.ChessModel.Manual;
 import com.funyoung.andchess.ChessModel.Piece;
 import com.funyoung.andchess.ChessModel.SelectingPiece;
 import com.funyoung.andchess.control.GameController;
+import com.funyoung.andchess.view.IGameView;
+import com.google.gson.Gson;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * @author yangfeng
  */
 public class GamePresenter extends GameController {
+    private static final String LAYOUT_FOLDER = "layout";
+    private static final String DEFAULT_LAYOUT_NAME = "layout/default.json";
     private final Map<String, Drawable> bitmapMap = new HashMap<>();
     private final SelectingPiece selectingPiece = new SelectingPiece();
 
@@ -33,14 +50,14 @@ public class GamePresenter extends GameController {
         return resources;
     }
 
-    public GamePresenter(GameView gameView, Resources resources) {
-        super(gameView);
+    public GamePresenter(IGameView view, Resources resources) {
+        super(view);
 
         this.resources = resources;
         selectionDrawable = getDrawable(R.drawable.ring);
         nextDrawable = getDrawable(R.drawable.next);
 
-        gameView.setup(this);
+        view.setup(this);
     }
 
     /**
@@ -115,10 +132,13 @@ public class GamePresenter extends GameController {
         SY_OFFSET = 15 * VIEW_HEIGHT / 712;
     }
 
-    protected void onDraw(Canvas canvas) {
-        /* 绘制棋子 */
-        drawChess(canvas);
-        drawPlayer(canvas);
+    protected void onDraw(Object object) {
+        if (object instanceof Canvas) {
+            /* 绘制棋子 */
+            Canvas canvas = (Canvas) object;
+            drawChess(canvas);
+            drawPlayer(canvas);
+        }
     }
 
 
@@ -271,6 +291,7 @@ public class GamePresenter extends GameController {
         }
     }
 
+    @Override
     public void touchDown(float x, float y) {
         Piece piece = null;
         if ((piece = coordinateIsPiece(x, y)) != null) {
@@ -280,7 +301,47 @@ public class GamePresenter extends GameController {
         }
     }
 
+    @Override
+    public void onDraw(Object canvas, int width, int height) {
+        init();
+        updateSize(width, height);
+        onDraw(canvas);
+    }
+
     private Drawable getDrawable(int resId) {
         return getResources().getDrawable(resId);
+    }
+
+    @WorkerThread
+    public void loadManual(String name) {
+        if (!manualList.contains(name)) {
+            name = DEFAULT_LAYOUT_NAME;
+        }
+
+        try (InputStream inputStream = resources.getAssets().open(name);
+             Reader reader = new InputStreamReader(inputStream)) {
+            Manual manual = new Gson().fromJson(reader, Manual.class);
+            update(manual);
+        } catch (Exception ex) {
+            Log.e(TAG, "exception occurs : " + ex.getMessage());
+        }
+    }
+
+    private final List<String> manualList = new ArrayList<>();
+    public List<String> loadAllManual() {
+        try {
+            if (manualList.isEmpty()) {
+                String[] nameList = resources.getAssets().list(LAYOUT_FOLDER);
+                if (null != nameList) {
+                    for (String name : nameList) {
+                        manualList.add(LAYOUT_FOLDER + File.separator + name);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return manualList;
     }
 }
